@@ -1,0 +1,17 @@
+Document/html/*
+Projects/uvProjecs/*
+Build/*
+*.dep
+*.jlink
+*.bat
+*.bak
+*.dni
+*.dbgdt
+*.wsdt
+*.rar
+*.zip
+*.tmp
+si/*
+*.wspos
+*.William
+.svn
