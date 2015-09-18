@@ -1720,7 +1720,7 @@
       <Focus>0</Focus>
       <ColumnNumber>16</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>64</TopLine>
+      <TopLine>61</TopLine>
       <CurrentLine>83</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Bootloader\BootloaderEntrance.c</PathWithFileName>
@@ -1998,10 +1998,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2557384</ColumnNumber>
+      <ColumnNumber>35</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>101</TopLine>
+      <CurrentLine>120</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\Cortex-M3\hardfault.c</PathWithFileName>
       <FilenameWithoutPath>hardfault.c</FilenameWithoutPath>
@@ -2080,8 +2080,8 @@
       <Focus>0</Focus>
       <ColumnNumber>38</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>439</TopLine>
+      <CurrentLine>440</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\mico_platform_common.c</PathWithFileName>
       <FilenameWithoutPath>mico_platform_common.c</FilenameWithoutPath>
@@ -2120,8 +2120,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\platform_init.c</PathWithFileName>
       <FilenameWithoutPath>platform_init.c</FilenameWithoutPath>
@@ -2366,10 +2366,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2557384</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>47</TopLine>
+      <CurrentLine>92</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\peripherals\platform_spi.c</PathWithFileName>
       <FilenameWithoutPath>platform_spi.c</FilenameWithoutPath>
@@ -2400,8 +2400,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\peripherals\platform_uart.c</PathWithFileName>
       <FilenameWithoutPath>platform_uart.c</FilenameWithoutPath>
