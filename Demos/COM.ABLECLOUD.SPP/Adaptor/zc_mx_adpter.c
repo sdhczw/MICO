@@ -20,7 +20,7 @@ extern void PlatformEasyLinkButtonClickedCallback(void);
 MX_Timer g_struMxTimer[ZC_TIMER_MAX_NUM];
 u16 g_struMxTimerCount[ZC_TIMER_MAX_NUM];
 u8 g_u8TimerIndex;
-mico_timer_t g_struMicoTimer;
+mico_timer_t g_struMicoTimer[ZC_TIMER_MAX_NUM];
 extern PTC_ProtocolCon  g_struProtocolController;
 PTC_ModuleAdapter g_struAdapter;
 
@@ -139,130 +139,128 @@ void MX_CloudRecvfunc(void *inContext)
     int tmp=1;    
     s8 s8ret = 0;
     
-//    while(1) 
-//    {
-        ZC_StartClientListen();
 
-        u32ActiveFlag = 0;
-        
-        timeout.tv_sec= 0; 
-        timeout.tv_usec= 1000; 
-        
-        FD_ZERO(&fdread);
-
-        FD_SET(g_Bcfd, &fdread);
-        u32MaxFd = u32MaxFd > g_Bcfd ? u32MaxFd : g_Bcfd;
-
-        if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
-        {
-            FD_SET(g_struProtocolController.struClientConnection.u32Socket, &fdread);
-            u32MaxFd = u32MaxFd > g_struProtocolController.struClientConnection.u32Socket ? u32MaxFd : g_struProtocolController.struClientConnection.u32Socket;
-            u32ActiveFlag = 1;
-        }
-        
-        if ((g_struProtocolController.u8MainState >= PCT_STATE_WAIT_ACCESSRSP) 
+    ZC_StartClientListen();
+    
+    u32ActiveFlag = 0;
+    
+    timeout.tv_sec= 0; 
+    timeout.tv_usec= 1000; 
+    
+    FD_ZERO(&fdread);
+    
+    FD_SET(g_Bcfd, &fdread);
+    u32MaxFd = u32MaxFd > g_Bcfd ? u32MaxFd : g_Bcfd;
+    
+    if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
+    {
+        FD_SET(g_struProtocolController.struClientConnection.u32Socket, &fdread);
+        u32MaxFd = u32MaxFd > g_struProtocolController.struClientConnection.u32Socket ? u32MaxFd : g_struProtocolController.struClientConnection.u32Socket;
+        u32ActiveFlag = 1;
+    }
+    
+    if ((g_struProtocolController.u8MainState >= PCT_STATE_WAIT_ACCESSRSP) 
         && (g_struProtocolController.u8MainState < PCT_STATE_DISCONNECT_CLOUD))
+    {
+        FD_SET(g_struProtocolController.struCloudConnection.u32Socket, &fdread);
+        u32MaxFd = u32MaxFd > g_struProtocolController.struCloudConnection.u32Socket ? u32MaxFd : g_struProtocolController.struCloudConnection.u32Socket;
+        u32ActiveFlag = 1;
+    }
+    
+    
+    for (u32Index = 0; u32Index < ZC_MAX_CLIENT_NUM; u32Index++)
+    {
+        if (0 == g_struClientInfo.u32ClientVaildFlag[u32Index])
         {
-            FD_SET(g_struProtocolController.struCloudConnection.u32Socket, &fdread);
-            u32MaxFd = u32MaxFd > g_struProtocolController.struCloudConnection.u32Socket ? u32MaxFd : g_struProtocolController.struCloudConnection.u32Socket;
-            u32ActiveFlag = 1;
+            FD_SET(g_struClientInfo.u32ClientFd[u32Index], &fdread);
+            u32MaxFd = u32MaxFd > g_struClientInfo.u32ClientFd[u32Index] ? u32MaxFd : g_struClientInfo.u32ClientFd[u32Index];
+            u32ActiveFlag = 1;            
         }
-
-
-        for (u32Index = 0; u32Index < ZC_MAX_CLIENT_NUM; u32Index++)
-        {
-            if (0 == g_struClientInfo.u32ClientVaildFlag[u32Index])
-            {
-                FD_SET(g_struClientInfo.u32ClientFd[u32Index], &fdread);
-                u32MaxFd = u32MaxFd > g_struClientInfo.u32ClientFd[u32Index] ? u32MaxFd : g_struClientInfo.u32ClientFd[u32Index];
-                u32ActiveFlag = 1;            
-            }
-        }
-
-
-        if (0 == u32ActiveFlag)
-        {
-            return;
-        }
-        
-        s8ret = select(u32MaxFd + 1, &fdread, NULL, NULL, &timeout);
-        if(s8ret<=0)
-        {
-           return ;
-        }
-
-        if ((g_struProtocolController.u8MainState >= PCT_STATE_WAIT_ACCESSRSP) 
+    }
+    
+    
+    if (0 == u32ActiveFlag)
+    {
+        return;
+    }
+    
+    s8ret = select(u32MaxFd + 1, &fdread, NULL, NULL, &timeout);
+    if(s8ret<=0)
+    {
+        return ;
+    }
+    
+    if ((g_struProtocolController.u8MainState >= PCT_STATE_WAIT_ACCESSRSP) 
         && (g_struProtocolController.u8MainState < PCT_STATE_DISCONNECT_CLOUD))
+    {
+        if (FD_ISSET(g_struProtocolController.struCloudConnection.u32Socket, &fdread))
         {
-            if (FD_ISSET(g_struProtocolController.struCloudConnection.u32Socket, &fdread))
-            {
-                s32RecvLen = recv(g_struProtocolController.struCloudConnection.u32Socket, g_u8recvbuffer, MX_MAX_SOCKET_LEN, 0); 
-                
-                if(s32RecvLen > 0) 
-                {
-                    ZC_Printf("recv data len = %d\n", s32RecvLen);
-                    MSG_RecvDataFromCloud(g_u8recvbuffer, s32RecvLen);
-                }
-                else
-                {
-                    ZC_Printf("recv error, len = %d\n",s32RecvLen);
-                    PCT_DisConnectCloud(&g_struProtocolController);
-                }
-            }
+            s32RecvLen = recv(g_struProtocolController.struCloudConnection.u32Socket, g_u8recvbuffer, MX_MAX_SOCKET_LEN, 0); 
             
-        }
-
-        
-        for (u32Index = 0; u32Index < ZC_MAX_CLIENT_NUM; u32Index++)
-        {
-            if (0 == g_struClientInfo.u32ClientVaildFlag[u32Index])
-            {
-                if (FD_ISSET(g_struClientInfo.u32ClientFd[u32Index], &fdread))
-                {
-                    s32RecvLen = recv(g_struClientInfo.u32ClientFd[u32Index], g_u8recvbuffer, MX_MAX_SOCKET_LEN, 0); 
-                    if (s32RecvLen > 0)
-                    {
-                        ZC_RecvDataFromClient(g_struClientInfo.u32ClientFd[u32Index], g_u8recvbuffer, s32RecvLen);
-                    }
-                    else
-                    {   
-                        ZC_ClientDisconnect(g_struClientInfo.u32ClientFd[u32Index]);
-                        close(g_struClientInfo.u32ClientFd[u32Index]);
-                    }
-                    
-                }
-            }
-            
-        }
-
-        if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
-        {
-            if (FD_ISSET(g_struProtocolController.struClientConnection.u32Socket, &fdread))
-            {
-                connfd = accept(g_struProtocolController.struClientConnection.u32Socket,(struct sockaddr_t *)&cliaddr,(socklen_t *)&u32Len);
-
-                if (ZC_RET_ERROR == ZC_ClientConnect((u32)connfd))
-                {
-                    close(connfd);
-                }
-                else
-                {
-                    ZC_Printf("accept client = %d\n", connfd);
-                }
-            }
-        }
-
-        if (FD_ISSET(g_Bcfd, &fdread))
-        {
-            tmp = sizeof(addr); 
-            s32RecvLen = recvfrom(g_Bcfd, g_u8MsgBuildBuffer, 100, 0, (struct sockaddr_t *)&addr, (socklen_t*)&tmp); 
             if(s32RecvLen > 0) 
             {
-                ZC_SendClientQueryReq(g_u8MsgBuildBuffer, (u16)s32RecvLen);
-            } 
+                ZC_Printf("recv data len = %d\n", s32RecvLen);
+                MSG_RecvDataFromCloud(g_u8recvbuffer, s32RecvLen);
+            }
+            else
+            {
+                ZC_Printf("recv error, len = %d\n",s32RecvLen);
+                PCT_DisConnectCloud(&g_struProtocolController);
+            }
         }
         
-//    } 
+    }
+    
+    
+    for (u32Index = 0; u32Index < ZC_MAX_CLIENT_NUM; u32Index++)
+    {
+        if (0 == g_struClientInfo.u32ClientVaildFlag[u32Index])
+        {
+            if (FD_ISSET(g_struClientInfo.u32ClientFd[u32Index], &fdread))
+            {
+                s32RecvLen = recv(g_struClientInfo.u32ClientFd[u32Index], g_u8recvbuffer, MX_MAX_SOCKET_LEN, 0); 
+                if (s32RecvLen > 0)
+                {
+                    ZC_RecvDataFromClient(g_struClientInfo.u32ClientFd[u32Index], g_u8recvbuffer, s32RecvLen);
+                }
+                else
+                {   
+                    ZC_ClientDisconnect(g_struClientInfo.u32ClientFd[u32Index]);
+                    close(g_struClientInfo.u32ClientFd[u32Index]);
+                }
+                
+            }
+        }
+        
+    }
+    
+    if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
+    {
+        if (FD_ISSET(g_struProtocolController.struClientConnection.u32Socket, &fdread))
+        {
+            connfd = accept(g_struProtocolController.struClientConnection.u32Socket,(struct sockaddr_t *)&cliaddr,(socklen_t *)&u32Len);
+            
+            if (ZC_RET_ERROR == ZC_ClientConnect((u32)connfd))
+            {
+                close(connfd);
+            }
+            else
+            {
+                ZC_Printf("accept client = %d\n", connfd);
+            }
+        }
+    }
+    
+    if (FD_ISSET(g_Bcfd, &fdread))
+    {
+        tmp = sizeof(addr); 
+        s32RecvLen = recvfrom(g_Bcfd, g_u8MsgBuildBuffer, 100, 0, (struct sockaddr_t *)&addr, (socklen_t*)&tmp); 
+        if(s32RecvLen > 0) 
+        {
+            ZC_SendClientQueryReq(g_u8MsgBuildBuffer, (u16)s32RecvLen);
+        } 
+    }
+    
 }
 
 /*************************************************
@@ -290,8 +288,8 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
         addr.s_ip = u32CloudIp;
         addr.s_port = ZC_CLOUD_PORT;
     }
-		
-		
+    
+    
     if (0 == addr.s_ip)
     {
         return ZC_RET_ERROR;
@@ -307,16 +305,16 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     if (connect(fd, &addr, sizeof(addr))< 0)
     {
         close(fd);
-	if(g_struProtocolController.struCloudConnection.u32ConnectionTimes++>20)
+        if(g_struProtocolController.struCloudConnection.u32ConnectionTimes++>20)
         {
-           g_struZcConfigDb.struSwitchInfo.u32ServerAddrConfig = 0;
+            g_struZcConfigDb.struSwitchInfo.u32ServerAddrConfig = 0;
         }
         return ZC_RET_ERROR;
     }
-
+    
     ZC_Printf("connect ok!\n");
-		
-		g_struProtocolController.struCloudConnection.u32Socket = fd;
+    
+    g_struProtocolController.struCloudConnection.u32Socket = fd;
     ZC_Rand(g_struProtocolController.RandMsg);
     
     return ZC_RET_OK;
@@ -398,7 +396,7 @@ u32 MX_SendDataToMoudle(u8 *pu8Data, u16 u16DataLen)
 *************************************************/
 void MX_StopTimer(u8 u8TimerIndex)
 {
-    g_struMxTimer[u8TimerIndex].u8ValidFlag = 0;
+    mico_stop_timer(&g_struMicoTimer[u8TimerIndex]);
 }
 
 /*************************************************
@@ -411,21 +409,9 @@ void MX_StopTimer(u8 u8TimerIndex)
 *************************************************/
 void  MX_timer_callback(void* arg) 
 {
-	  u8 i =0;
-    (void )arg;
-    
-    for(i=0;i<ZC_TIMER_MAX_NUM;i++)
-    {
-        if(g_struMxTimer[i].u8ValidFlag)
-        {
-            if(g_struMxTimer[i].u32Interval==g_struMxTimerCount[i]++)
-            {
-                g_struMxTimerCount[i]=0;
-                TIMER_TimeoutAction(i);
-				TIMER_StopTimer(i);
-            }
-        }
-    }
+    u8 u8TimeId = ((MX_Timer*)arg)->u8TimerIndex;
+    TIMER_TimeoutAction(u8TimeId);
+    TIMER_StopTimer(u8TimeId);
 }
 
 /*************************************************
@@ -436,6 +422,7 @@ void  MX_timer_callback(void* arg)
 * Parameter: 
 * History:
 *************************************************/
+
 u32 MX_SetTimer(u8 u8Type, u32 u32Interval, u8 *pu8TimeIndex)
 {
     u8 u8TimerIndex;
@@ -444,11 +431,11 @@ u32 MX_SetTimer(u8 u8Type, u32 u32Interval, u8 *pu8TimeIndex)
 
     if (ZC_RET_OK == u32Retval)
     {
-        TIMER_AllocateTimer(u8Type, u8TimerIndex, (u8*)&g_struMxTimer[u8TimerIndex]);
-        g_struMxTimer[u8TimerIndex].u32Interval = u32Interval/1000;
-        g_struMxTimer[u8TimerIndex].u8ValidFlag = 1;
-        g_struMxTimerCount[u8TimerIndex]=0;
-		*pu8TimeIndex = u8TimerIndex;
+
+        TIMER_AllocateTimer(u8Type, u8TimerIndex, (u8*)&g_struMxTimer[u8TimerIndex]);     
+        mico_init_timer(&g_struMicoTimer[u8TimerIndex],u32Interval,MX_timer_callback,(u8*)&g_struMxTimer[u8TimerIndex]);	
+        mico_start_timer(&g_struMicoTimer[u8TimerIndex]);
+        *pu8TimeIndex = u8TimerIndex;
     }
     return u32Retval;
 
@@ -527,9 +514,9 @@ void MX_SendTcpData(u32 u32Fd, u8 *pu8Data, u16 u16DataLen, ZC_SendParam *pstruP
 *************************************************/
 void MX_SendUdpData(u32 u32Fd, u8 *pu8Data, u16 u16DataLen, ZC_SendParam *pstruParam)
 {
-
+    
     sendto(u32Fd, pu8Data, u16DataLen, 0, 
-        (struct sockaddr_t*)(pstruParam->pu8AddrPara), sizeof(struct sockaddr_t)); 
+           (struct sockaddr_t*)(pstruParam->pu8AddrPara), sizeof(struct sockaddr_t)); 
 }	
 
 /*************************************************
@@ -583,7 +570,7 @@ void MX_BcInit()
     addr.s_port = ZC_MOUDLE_PORT;
     addr.s_ip = INADDR_ANY;
     g_Bcfd = socket(AF_INET, SOCK_DGRM, IPPROTO_UDP); 
-    tmp=1; 
+
     setsockopt(g_Bcfd, SOL_SOCKET,SO_BROADCAST,&tmp,sizeof(tmp)); 
     bind(g_Bcfd, &addr, sizeof(addr));
     g_struProtocolController.u16SendBcNum = 0;
@@ -605,59 +592,39 @@ void MX_BcInit()
 *************************************************/
 void MX_Cloudfunc(void *inContext)
 {
-		int fd;
-		u32 u32Timer = 0;
-
-		MX_BcInit();
-
-		while(1) 
-		{
-            mico_thread_msleep(1);
-			fd = g_struProtocolController.struCloudConnection.u32Socket;
-			PCT_Run();
-            MX_CloudRecvfunc(inContext);
-			if (PCT_STATE_DISCONNECT_CLOUD == g_struProtocolController.u8MainState)
-			{
-                close(fd);
-                if (0 == g_struProtocolController.struCloudConnection.u32ConnectionTimes)
-                {
-                    u32Timer = 1000;
-                }
-                else
-                {
-                    u32Timer = rand();
-                    u32Timer = (PCT_TIMER_INTERVAL_RECONNECT) * (u32Timer % 10 + 1);
-                }
-                PCT_ReconnectCloud(&g_struProtocolController, u32Timer);
-                g_struUartBuffer.u32Status = MSG_BUFFER_IDLE;
-                g_struUartBuffer.u32RecvLen = 0;
-			}
-			else
-			{
-					MSG_SendDataToCloud((u8*)&g_struProtocolController.struCloudConnection);
-			}
-			ZC_SendBc();
-                //MicoWdgReload();
-		} 
-}
-/*************************************************
-* Function: MX_TimerInit
-* Description: 
-* Author: cxy 
-* Returns: 
-* Parameter: 
-* History:
-*************************************************/
-void MX_TimerInit()
-{
-    u8 i = 0;
-
-    for(i=0;i<ZC_TIMER_MAX_NUM;i++)
+    int fd;
+    u32 u32Timer = 0;
+    
+    MX_BcInit();
+    
+    while(1) 
     {
-        g_struMxTimer[i].u8ValidFlag = 0;
-    }
-		mico_init_timer(&g_struMicoTimer,1000,MX_timer_callback,NULL);	
-	  mico_start_timer(&g_struMicoTimer);
+        mico_thread_msleep(1);
+        fd = g_struProtocolController.struCloudConnection.u32Socket;
+        PCT_Run();
+        MX_CloudRecvfunc(inContext);
+        if (PCT_STATE_DISCONNECT_CLOUD == g_struProtocolController.u8MainState)
+        {
+            close(fd);
+            if (0 == g_struProtocolController.struCloudConnection.u32ConnectionTimes)
+            {
+                u32Timer = 1000;
+            }
+            else
+            {
+                u32Timer = rand();
+                u32Timer = (PCT_TIMER_INTERVAL_RECONNECT) * (u32Timer % 10 + 1);
+            }
+            PCT_ReconnectCloud(&g_struProtocolController, u32Timer);
+            g_struUartBuffer.u32Status = MSG_BUFFER_IDLE;
+            g_struUartBuffer.u32RecvLen = 0;
+        }
+        else
+        {
+            MSG_SendDataToCloud((u8*)&g_struProtocolController.struCloudConnection);
+        }
+        ZC_SendBc();
+    } 
 }
 
 /*************************************************
@@ -690,8 +657,7 @@ void MX_Init()
 
     g_u16TcpMss = 1000;
     PCT_Init(&g_struAdapter);
-       
-	MX_TimerInit();
+
     ZC_Printf("MT Init\n");
 }
 
@@ -707,10 +673,6 @@ void socket_connected(int fd)
 {
     ZC_Printf("socket connected\n");
     g_struProtocolController.struCloudConnection.u32Socket = fd;
-   
-//    ZC_Rand(g_struProtocolController.RandMsg);
-//	  g_struProtocolController.u8MainState = PCT_STATE_WAIT_ACCESS;
-//	  ZC_Printf("socket_connected fd = %d\n",fd);
 }
 /*************************************************
 * Function: RptConfigmodeRslt
@@ -726,7 +688,7 @@ void RptConfigmodeRslt(network_InitTypeDef_st *nwkpara)
     {
         printf("open easy link\n");    
         //OpenEasylink(60*5);
-			  context->micoStatus.sys_state = eState_Software_Reset;
+        context->micoStatus.sys_state = eState_Software_Reset;
         mico_rtos_set_semaphore(&context->micoStatus.sys_state_change_sem);
     }
     else
@@ -736,11 +698,10 @@ void RptConfigmodeRslt(network_InitTypeDef_st *nwkpara)
         memset(context->flashContentInRam.micoSystemConfig.bssid, 0x0, 6);
         memcpy(context->flashContentInRam.micoSystemConfig.user_key, nwkpara->wifi_key, maxKeyLen);
         context->flashContentInRam.micoSystemConfig.user_keyLength = strlen(nwkpara->wifi_key);
-         context->flashContentInRam.micoSystemConfig.configured = allConfigured;
+        context->flashContentInRam.micoSystemConfig.configured = allConfigured;
         /*Clear fastlink record*/
-//        memset(&(context->flashContentInRam.micoSystemConfig.fastLinkConf), 0x0, sizeof(fast_link_st));
-			  MICOUpdateConfiguration(context);
-			  context->micoStatus.sys_state = eState_Software_Reset;
+        MICOUpdateConfiguration(context);
+        context->micoStatus.sys_state = eState_Software_Reset;
         mico_rtos_set_semaphore(&context->micoStatus.sys_state_change_sem);
     }
 }
@@ -755,15 +716,15 @@ void RptConfigmodeRslt(network_InitTypeDef_st *nwkpara)
 *************************************************/
 void dns_ip_set(u8 *hostname, u32 ip)
 {
-	  if((int)ip == -1)
-	  {
-	      printf("DNS ERROR\n");
-	  }
-	  else
-	  {
+    if((int)ip == -1)
+    {
+        printf("DNS ERROR\n");
+    }
+    else
+    {
         u32CloudIp = ip;
         printf("DNS = 0x%x\n", u32CloudIp);
-	  }
+    }
 }
 
 /*************************************************
@@ -778,14 +739,13 @@ void MX_ReadDataFormFlash(void)
 {
     u32 configInFlash;
     u32 u32MagicFlag = 0xFFFFFFFF;
-
+    
     configInFlash = EX_PARA_START_ADDRESS;
     MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);
     MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)&u32MagicFlag, 4);
     if (ZC_MAGIC_FLAG == u32MagicFlag)
     {
-        //memcpy(&g_struZcConfigDb, (void *)(configInFlash + sizeof(flash_content_t)), sizeof(ZC_ConfigDB));
-			MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)&g_struZcConfigDb.struConnection, sizeof(ZC_ConfigDB)-4);
+        MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)&g_struZcConfigDb.struConnection, sizeof(ZC_ConfigDB)-4);
     }
     else
     {

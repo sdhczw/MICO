@@ -180,10 +180,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>43</ColumnNumber>
+      <ColumnNumber>4</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>27</TopLine>
-      <CurrentLine>53</CurrentLine>
+      <TopLine>32</TopLine>
+      <CurrentLine>48</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Demos\COM.ABLECLOUD.SPP\MICOAppEntrance.c</PathWithFileName>
       <FilenameWithoutPath>MICOAppEntrance.c</FilenameWithoutPath>
@@ -372,10 +372,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>315</TopLine>
-      <CurrentLine>322</CurrentLine>
+      <TopLine>310</TopLine>
+      <CurrentLine>321</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\MICO\MICOEntrance.c</PathWithFileName>
       <FilenameWithoutPath>MICOEntrance.c</FilenameWithoutPath>
@@ -420,10 +420,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2560996</ColumnNumber>
+      <ColumnNumber>42</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>36</TopLine>
+      <CurrentLine>39</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\MICO\MICOSystemMonitor.c</PathWithFileName>
       <FilenameWithoutPath>MICOSystemMonitor.c</FilenameWithoutPath>
@@ -438,7 +438,7 @@
       <Focus>0</Focus>
       <ColumnNumber>1</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>18</TopLine>
+      <TopLine>19</TopLine>
       <CurrentLine>20</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\MICO\EasyLink\EasyLink.c</PathWithFileName>
@@ -502,7 +502,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>215</TopLine>
+      <TopLine>250</TopLine>
       <CurrentLine>265</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\MICO\MICOMfgtest.c</PathWithFileName>
@@ -530,7 +530,7 @@
 
   <Group>
     <GroupName>MICO/Library</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -542,7 +542,7 @@
       <Focus>0</Focus>
       <ColumnNumber>13</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>8</TopLine>
+      <TopLine>22</TopLine>
       <CurrentLine>37</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\MICO\Library\MICOConfig.c</PathWithFileName>
@@ -590,7 +590,7 @@
       <Focus>0</Focus>
       <ColumnNumber>8</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>2</TopLine>
+      <TopLine>5</TopLine>
       <CurrentLine>6</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\MICO\Library\RF driver\wlan_firmware.c</PathWithFileName>
@@ -602,7 +602,7 @@
 
   <Group>
     <GroupName>Support</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -786,7 +786,7 @@
 
   <Group>
     <GroupName>External/JSON-C</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -934,7 +934,7 @@
       <Focus>0</Focus>
       <ColumnNumber>35</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>79</TopLine>
+      <TopLine>104</TopLine>
       <CurrentLine>120</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\Cortex-M3\hardfault.c</PathWithFileName>
@@ -1030,7 +1030,7 @@
       <Focus>0</Focus>
       <ColumnNumber>38</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>433</TopLine>
+      <TopLine>439</TopLine>
       <CurrentLine>440</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\mico_platform_common.c</PathWithFileName>
@@ -1708,10 +1708,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>14</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>84</TopLine>
-      <CurrentLine>98</CurrentLine>
+      <TopLine>3</TopLine>
+      <CurrentLine>20</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Demos\COM.ABLECLOUD.SPP\ZC\src\zc\zc_configuration.c</PathWithFileName>
       <FilenameWithoutPath>zc_configuration.c</FilenameWithoutPath>
@@ -1742,7 +1742,7 @@
       <Focus>0</Focus>
       <ColumnNumber>39</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>101</TopLine>
+      <TopLine>253</TopLine>
       <CurrentLine>268</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Demos\COM.ABLECLOUD.SPP\ZC\src\zc\zc_moudle_manager.c</PathWithFileName>
@@ -1756,10 +1756,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>4</ColumnNumber>
+      <ColumnNumber>28</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>701</TopLine>
-      <CurrentLine>711</CurrentLine>
+      <TopLine>729</TopLine>
+      <CurrentLine>735</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Demos\COM.ABLECLOUD.SPP\ZC\src\zc\zc_protocol_controller.c</PathWithFileName>
       <FilenameWithoutPath>zc_protocol_controller.c</FilenameWithoutPath>
@@ -1892,10 +1892,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>17</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>327</TopLine>
-      <CurrentLine>130</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Demos\COM.ABLECLOUD.SPP\Adaptor\zc_mx_adpter.c</PathWithFileName>
       <FilenameWithoutPath>zc_mx_adpter.c</FilenameWithoutPath>

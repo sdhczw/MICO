@@ -318,8 +318,8 @@ int application_start(void)
   mico_log("Wi-Fi driver version %s, mac %s", wifi_ver, context->micoStatus.mac);
  
 //  /*Start system monotor thread*/
-//  err = MICOStartSystemMonitor(context);
-//  require_noerr_action( err, exit, mico_log("ERROR: Unable to start the system monitor.") );
+  err = MICOStartSystemMonitor(context);
+  require_noerr_action( err, exit, mico_log("ERROR: Unable to start the system monitor.") );
 //
 //  err = MICORegisterSystemMonitor(&mico_monitor, APPLICATION_WATCHDOG_TIMEOUT_SECONDS*1000);
 //  require_noerr( err, exit );

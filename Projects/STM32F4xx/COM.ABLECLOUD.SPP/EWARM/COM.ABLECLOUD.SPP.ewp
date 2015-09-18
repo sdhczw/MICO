@@ -177,6 +177,7 @@
           <state>HSE_VALUE=26000000</state>
           <state>ZC_MODULE_VERSION=0 </state>
           <state>ZC_MODULE_TYPE=5</state>
+          <state>xZC_MODULE_DEV</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
