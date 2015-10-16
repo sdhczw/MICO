@@ -276,7 +276,7 @@ int application_start(void)
 {
   OSStatus err = kNoErr;
   IPStatusTypedef para;
-  char wifi_ver[64] = {0};
+  char wifi_ver[80] = {0};
   mico_log_trace(); 
 
   /*Read current configurations*/
@@ -305,6 +305,18 @@ int application_start(void)
   /*wlan driver and tcpip init*/
   mico_log( "MiCO starting..." );
   MicoInit();
+  if(FLASH_OB_GetBOR()!= OB_BOR_LEVEL2 )
+  {
+    FLASH_OB_Unlock();
+    FLASH_OB_BORConfig(OB_BOR_LEVEL2 );
+ 
+    FLASH_OB_Launch();
+    FLASH_OB_Lock();
+  }
+  if(FLASH_OB_GetBOR()!= OB_BOR_LEVEL2)
+  {
+      NVIC_SystemReset();
+  }
 
 #ifdef MICO_CLI_ENABLE
   MicoCliInit();
@@ -327,10 +339,11 @@ int application_start(void)
 //  mico_start_timer(&_watchdog_reload_timer);
 
   /* Enter test mode, call a build-in test function amd output on MFG UART */
-//  if(MicoShouldEnterMFGMode()==true){
-//    mico_log( "Enter MFG mode by MFG button" );
-//    mico_mfg_test(context);
-//  }
+  if(MicoShouldEnterMFGMode()==true)
+  {
+    mico_log( "Enter MFG mode by MFG button" );
+    mico_mfg_test(context);
+  }
   
   /*Read current time from RTC.*/
 //  if( MicoRtcGetTime(&time) == kNoErr ){
@@ -461,7 +474,6 @@ int application_start(void)
         MicoSystemStandBy(MICO_WAIT_FOREVER);
         break;			
       case eState_EasyLink:
-        mico_log(" eState_EasyLink");
         MX_Rest();
         mico_thread_msleep(300);
         MicoSystemReboot();

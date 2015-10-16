@@ -177,7 +177,7 @@
           <state>HSE_VALUE=26000000</state>
           <state>ZC_MODULE_VERSION=0 </state>
           <state>ZC_MODULE_TYPE=5</state>
-          <state>xZC_MODULE_DEV</state>
+          <state>ZC_MODULE_DEV</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -3192,6 +3192,33 @@
         <file>
           <name>$PROJ_DIR$\..\..\..\..\Platform\Drivers\MicoDriverMFiAuth\MicoDriverMFiAuth.a</name>
         </file>
+      </group>
+      <group>
+        <name>MiCOKit-EXT</name>
+        <group>
+          <name>sensors</name>
+          <group>
+            <name>dc_motor</name>
+          </group>
+          <group>
+            <name>infrared_reflective</name>
+          </group>
+          <group>
+            <name>key</name>
+          </group>
+          <group>
+            <name>lcd</name>
+          </group>
+          <group>
+            <name>light</name>
+          </group>
+          <group>
+            <name>rgb_led</name>
+          </group>
+          <group>
+            <name>temp_hum_sensor</name>
+          </group>
+        </group>
       </group>
       <group>
         <name>SPI Flash</name>

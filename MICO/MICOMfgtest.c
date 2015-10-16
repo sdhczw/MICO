@@ -124,7 +124,7 @@ static char * ssid_get(void)
 #if (MFG_FUNCTION == 1) 
 void mico_mfg_test(mico_Context_t *inContex)
 {
-  char str[64];
+  char str[80];
   char mac[6];
   char *ssid;
   UNUSED_PARAMETER(inContex);
@@ -132,7 +132,7 @@ void mico_mfg_test(mico_Context_t *inContex)
   volatile ring_buffer_t  rx_buffer;
   volatile uint8_t *      rx_data;
   
-  rx_data = malloc(50);
+  rx_data = malloc(100);
   require(rx_data, exit);
   
   /* Initialize UART interface */
@@ -143,7 +143,7 @@ void mico_mfg_test(mico_Context_t *inContex)
   uart_config.flow_control = FLOW_CONTROL_DISABLED;
   uart_config.flags = UART_WAKEUP_DISABLE;
   
-  ring_buffer_init  ( (ring_buffer_t *)&rx_buffer, (uint8_t *)rx_data, 50 );
+  ring_buffer_init  ( (ring_buffer_t *)&rx_buffer, (uint8_t *)rx_data, 100 );
   MicoUartInitialize( MFG_TEST, &uart_config, (ring_buffer_t *)&rx_buffer );  
   
   sprintf(str, "Library Version: %s\r\n", system_lib_version());

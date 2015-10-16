@@ -45,7 +45,7 @@
 #define MAX_QUEUE_NUM                       6  // 1 remote client, 5 local server
 #define MAX_QUEUE_LENGTH                    8  // each queue max 8 msg
 #define UART_RECV_TIMEOUT                   500
-#define UART_ONE_PACKAGE_LENGTH             1024
+#define UART_ONE_PACKAGE_LENGTH             32
 #define wlanBufferLen                       1024
 #define UART_BUFFER_LENGTH                  2048
 #define RECVED_UART_DATA_LOOPBACK_PORT      1003
