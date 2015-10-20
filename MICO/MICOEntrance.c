@@ -305,19 +305,6 @@ int application_start(void)
   /*wlan driver and tcpip init*/
   mico_log( "MiCO starting..." );
   MicoInit();
-  if(FLASH_OB_GetBOR()!= OB_BOR_LEVEL2 )
-  {
-    FLASH_OB_Unlock();
-    FLASH_OB_BORConfig(OB_BOR_LEVEL2 );
- 
-    FLASH_OB_Launch();
-    FLASH_OB_Lock();
-  }
-  if(FLASH_OB_GetBOR()!= OB_BOR_LEVEL2)
-  {
-      NVIC_SystemReset();
-  }
-
 #ifdef MICO_CLI_ENABLE
   MicoCliInit();
 #endif
