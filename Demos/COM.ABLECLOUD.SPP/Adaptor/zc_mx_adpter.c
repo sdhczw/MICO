@@ -20,7 +20,7 @@ extern void PlatformEasyLinkButtonClickedCallback(void);
 MX_Timer g_struMxTimer[ZC_TIMER_MAX_NUM];
 u16 g_struMxTimerCount[ZC_TIMER_MAX_NUM];
 u8 g_u8TimerIndex;
-mico_timer_t g_struMicoTimer[ZC_TIMER_MAX_NUM];
+mico_timer_t g_struMicoTimer;
 extern PTC_ProtocolCon  g_struProtocolController;
 PTC_ModuleAdapter g_struAdapter;
 
@@ -396,7 +396,7 @@ u32 MX_SendDataToMoudle(u8 *pu8Data, u16 u16DataLen)
 *************************************************/
 void MX_StopTimer(u8 u8TimerIndex)
 {
-    mico_stop_timer(&g_struMicoTimer[u8TimerIndex]);
+    g_struMxTimer[u8TimerIndex].u8ValidFlag = 0;
 }
 
 /*************************************************
@@ -409,9 +409,21 @@ void MX_StopTimer(u8 u8TimerIndex)
 *************************************************/
 void  MX_timer_callback(void* arg) 
 {
-    u8 u8TimeId = ((MX_Timer*)arg)->u8TimerIndex;
-    TIMER_TimeoutAction(u8TimeId);
-    TIMER_StopTimer(u8TimeId);
+	  u8 i =0;
+    (void )arg;
+    
+    for(i=0;i<ZC_TIMER_MAX_NUM;i++)
+    {
+        if(g_struMxTimer[i].u8ValidFlag)
+        {
+            if(g_struMxTimer[i].u32Interval<=g_struMxTimerCount[i]++)
+            {
+                g_struMxTimerCount[i]=0;
+                TIMER_TimeoutAction(i);
+				TIMER_StopTimer(i);
+            }
+        }
+    }
 }
 
 /*************************************************
@@ -431,11 +443,11 @@ u32 MX_SetTimer(u8 u8Type, u32 u32Interval, u8 *pu8TimeIndex)
 
     if (ZC_RET_OK == u32Retval)
     {
-
-        TIMER_AllocateTimer(u8Type, u8TimerIndex, (u8*)&g_struMxTimer[u8TimerIndex]);     
-        mico_init_timer(&g_struMicoTimer[u8TimerIndex],u32Interval,MX_timer_callback,(u8*)&g_struMxTimer[u8TimerIndex]);	
-        mico_start_timer(&g_struMicoTimer[u8TimerIndex]);
-        *pu8TimeIndex = u8TimerIndex;
+        TIMER_AllocateTimer(u8Type, u8TimerIndex, (u8*)&g_struMxTimer[u8TimerIndex]);
+        g_struMxTimer[u8TimerIndex].u32Interval = u32Interval/100;
+        g_struMxTimer[u8TimerIndex].u8ValidFlag = 1;
+        g_struMxTimerCount[u8TimerIndex]=0;
+		*pu8TimeIndex = u8TimerIndex;
     }
     return u32Retval;
 
@@ -626,6 +638,25 @@ void MX_Cloudfunc(void *inContext)
         ZC_SendBc();
     } 
 }
+/*************************************************
+* Function: MX_TimerInit
+* Description: 
+* Author: cxy 
+* Returns: 
+* Parameter: 
+* History:
+*************************************************/
+void MX_TimerInit()
+{
+    u8 i = 0;
+
+    for(i=0;i<ZC_TIMER_MAX_NUM;i++)
+    {
+        g_struMxTimer[i].u8ValidFlag = 0;
+    }
+	  mico_init_timer(&g_struMicoTimer,100,MX_timer_callback,NULL);	
+	  mico_start_timer(&g_struMicoTimer);
+}
 
 /*************************************************
 * Function: MX_Init
@@ -657,7 +688,7 @@ void MX_Init()
 
     g_u16TcpMss = 1000;
     PCT_Init(&g_struAdapter);
-
+	MX_TimerInit();
     ZC_Printf("MT Init\n");
 }
 
