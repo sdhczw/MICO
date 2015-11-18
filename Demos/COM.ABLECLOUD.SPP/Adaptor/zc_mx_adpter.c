@@ -10,7 +10,6 @@
 #include <zc_mx_adpter.h>
 #include <ac_api.h>
 //extern vu32 MS_TIMER;
-#define DEFAULT_SYSTEM_MONITOR_PERIOD   (2000)
 
 u8 g_u8recvbuffer[MX_MAX_SOCKET_LEN]; // cmd, fwd data are saved in this buffer
 ZC_UartBuffer g_struUartBuffer;
@@ -407,7 +406,7 @@ void MX_StopTimer(u8 u8TimerIndex)
 * Parameter: 
 * History:
 *************************************************/
-void  MX_timer_callback(void* arg) 
+void MX_timer_callback(void* arg) 
 {
 	  u8 i =0;
     (void )arg;
@@ -467,8 +466,6 @@ void MX_Rest()
     {
         PlatformEasyLinkButtonClickedCallback();
     }
-    g_struZcConfigDb.struSwitchInfo.u32ServerAddrConfig = 0;
-    MX_WriteDataToFlash((u8*)&g_struZcConfigDb, sizeof(ZC_ConfigDB));
 }
 /*************************************************
 * Function: MX_Rest
@@ -513,7 +510,7 @@ void MX_GetMac(u8 *pu8Mac)
 *************************************************/
 void MX_SendTcpData(u32 u32Fd, u8 *pu8Data, u16 u16DataLen, ZC_SendParam *pstruParam)
 {
-    send(u32Fd, pu8Data, u16DataLen, 0);    
+    send(u32Fd, pu8Data, u16DataLen, 0); 
 }
 
 /*************************************************
@@ -526,7 +523,6 @@ void MX_SendTcpData(u32 u32Fd, u8 *pu8Data, u16 u16DataLen, ZC_SendParam *pstruP
 *************************************************/
 void MX_SendUdpData(u32 u32Fd, u8 *pu8Data, u16 u16DataLen, ZC_SendParam *pstruParam)
 {
-    
     sendto(u32Fd, pu8Data, u16DataLen, 0, 
            (struct sockaddr_t*)(pstruParam->pu8AddrPara), sizeof(struct sockaddr_t)); 
 }	
@@ -690,6 +686,7 @@ void MX_Init()
     PCT_Init(&g_struAdapter);
 	MX_TimerInit();
     ZC_Printf("MT Init\n");
+    MX_ReadDataFormFlash();
 }
 
 /*************************************************

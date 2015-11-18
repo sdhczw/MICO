@@ -27,7 +27,7 @@
 #include "MICO.h"
 #include "Common.h"
 
-#define APP_INFO   "mxchipWNet SPP Demo based on MICO OS"
+#define APP_INFO  "3088@Ablecloud"
 
 #define FIRMWARE_REVISION   "MICO_SPP_2_4"
 #define MANUFACTURER        "MXCHIP Inc."
@@ -41,11 +41,11 @@
 //#define MICO_C_CPP_MIXING_DEMO
 
 /*User provided configurations*/
-#define CONFIGURATION_VERSION               0x00000002 // if default configuration is changed, update this number
+#define CONFIGURATION_VERSION               0x00000000 // if default configuration is changed, update this number
 #define MAX_QUEUE_NUM                       6  // 1 remote client, 5 local server
 #define MAX_QUEUE_LENGTH                    8  // each queue max 8 msg
 #define UART_RECV_TIMEOUT                   500
-#define UART_ONE_PACKAGE_LENGTH             32
+#define UART_ONE_PACKAGE_LENGTH             1024
 #define wlanBufferLen                       1024
 #define UART_BUFFER_LENGTH                  2048
 #define RECVED_UART_DATA_LOOPBACK_PORT      1003
@@ -64,6 +64,11 @@
   #define STACK_SIZE_REMOTE_TCP_CLIENT_THREAD   0x260
 #endif
 
+/*Running status*/
+typedef struct{
+  /*Local clients port list*/
+  uint32_t          configDataVer;
+} application_config_t;
 void uartRecv_thread(void *inContext);
 
 #endif

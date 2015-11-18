@@ -34,6 +34,7 @@ volatile uint8_t        rx_data[UART_BUFFER_LENGTH];
 /* MICO system callback: Restore default configuration provided by application */
 void appRestoreDefault_callback(mico_Context_t *inContext)
 {
+     inContext->flashContentInRam.appConfig.configDataVer = CONFIGURATION_VERSION;
 }
 
 OSStatus MICOStartApplication( mico_Context_t * const inContext )
@@ -45,13 +46,14 @@ OSStatus MICOStartApplication( mico_Context_t * const inContext )
     require_action(inContext, exit, err = kParamErr);
     
     MX_Init();
-    MX_ReadDataFormFlash();
+    AC_Init();
     /*UART receive thread*/
     uart_config.baud_rate    = 115200;
     uart_config.data_width   = DATA_WIDTH_8BIT;
     uart_config.parity       = NO_PARITY;
     uart_config.stop_bits    = STOP_BITS_1;
     uart_config.flow_control = FLOW_CONTROL_DISABLED;
+
     if(inContext->flashContentInRam.micoSystemConfig.mcuPowerSaveEnable == true)
         uart_config.flags = UART_WAKEUP_ENABLE;
     else

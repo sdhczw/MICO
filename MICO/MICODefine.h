@@ -163,7 +163,7 @@ typedef struct _flash_configuration_t {
   /*MICO system core configuration*/
   mico_sys_config_t        micoSystemConfig;
   /*Application configuration*/
-  //application_config_t     appConfig; 
+  application_config_t     appConfig; 
 } flash_content_t;
 
 typedef struct _current_mico_status_t 

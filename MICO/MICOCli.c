@@ -310,7 +310,6 @@ static void cli_main(void *data)
   while (1) {
     int ret;
     char *msg;
-    
     if (!get_input(pCli->inbuf, &pCli->bp))
       continue;
     msg = pCli->inbuf;

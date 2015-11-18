@@ -50,7 +50,6 @@ OSStatus MICORestoreDefault(mico_Context_t *inContext)
  
   paraStartAddress = PARA_START_ADDRESS;
   paraEndAddress = PARA_END_ADDRESS;
-
   /*wlan configration is not need to change to a default state, use easylink to do that*/
   memset(&inContext->flashContentInRam, 0x0, sizeof(inContext->flashContentInRam));
   sprintf(inContext->flashContentInRam.micoSystemConfig.name, DEFAULT_NAME);
@@ -73,7 +72,6 @@ OSStatus MICORestoreDefault(mico_Context_t *inContext)
   require_noerr(err, exit);
   err = MicoFlashFinalize(MICO_FLASH_FOR_PARA);
   require_noerr(err, exit);
-
 exit:
   return err;
 }
@@ -102,7 +100,6 @@ OSStatus MICORestoreMFG(mico_Context_t *inContext)
   require_noerr(err, exit);
   err = MicoFlashFinalize(MICO_FLASH_FOR_PARA);
   require_noerr(err, exit);
-
 exit:
   return err;
 }
@@ -120,7 +117,17 @@ OSStatus MICOReadConfiguration(mico_Context_t *inContext)
   err = MicoFlashRead(MICO_FLASH_FOR_PARA, &configInFlash, (uint8_t *)&inContext->flashContentInRam, sizeof(flash_content_t));
   seedNum = inContext->flashContentInRam.micoSystemConfig.seed;
   if(seedNum == -1) seedNum = 0;
+  printf("version =%d\n",inContext->flashContentInRam.appConfig.configDataVer);
+  if(inContext->flashContentInRam.appConfig.configDataVer != CONFIGURATION_VERSION){
+#ifdef MFG_MODE_AUTO
+      err = MICORestoreMFG(inContext);
+#else
+      err = MICORestoreDefault(inContext);
+#endif
 
+      require_noerr(err, exit);
+      //MicoSystemReboot();
+  } 
   if(inContext->flashContentInRam.micoSystemConfig.dhcpEnable == DHCP_Disable){
     strcpy((char *)inContext->micoStatus.localIp, inContext->flashContentInRam.micoSystemConfig.localIp);
     strcpy((char *)inContext->micoStatus.netMask, inContext->flashContentInRam.micoSystemConfig.netMask);

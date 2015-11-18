@@ -269,7 +269,7 @@ void _ConnectToAP( mico_Context_t * const inContext)
   mico_rtos_unlock_mutex(&inContext->flashContentInRam_mutex);
 
   micoWlanStart(&wNetConfig);
-	ps_enable();
+	//ps_enable();
 }
 
 int application_start(void)
