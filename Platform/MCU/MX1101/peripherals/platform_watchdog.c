@@ -74,7 +74,7 @@ OSStatus platform_watchdog_init( uint32_t timeout_ms )
   return kUnsupportedErr;
 #else
   OSStatus err = kNoErr;
-  require_action( timeout_ms < 4000 && timeout_ms > 0, exit, err = kParamErr );
+  require_action( timeout_ms < 5000 && timeout_ms > 0, exit, err = kParamErr );
 
   if ( timeout_ms > 3000 )
   	WdgEn(WDG_STEP_4S);

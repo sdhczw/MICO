@@ -43,6 +43,7 @@
 #include "WPS/WPS.h"
 #include "WAC/MFi_WAC.h"
 #include "StringUtils.h"
+#include <ac_api.h>
 
 #if defined (CONFIG_MODE_EASYLINK) || defined (CONFIG_MODE_EASYLINK_WITH_SOFTAP)
 #include "EasyLink/EasyLink.h"
@@ -52,7 +53,7 @@
 #include "Airkiss/Airkiss.h"
 #endif
  mico_Context_t *context;
-
+uint8_t g_checkOK = 0;
 
 const char *eaProtocols[1] = {EA_PROTOCOL};
 
@@ -156,6 +157,7 @@ void micoNotify_WifiStatusHandler(WiFiEvent event, mico_Context_t * const inCont
 void micoNotify_DHCPCompleteHandler(IPStatusTypedef *pnet, mico_Context_t * const inContext)
 {
 	extern u32 u32CloudIp;
+    extern u32 g_u32GloablIp;
 	int retval;
     mico_log_trace();
     require(inContext, exit);
@@ -167,8 +169,8 @@ void micoNotify_DHCPCompleteHandler(IPStatusTypedef *pnet, mico_Context_t * cons
     strcpy((char *)inContext->micoStatus.dnsServer, pnet->dns);
     mico_rtos_unlock_mutex(&inContext->flashContentInRam_mutex);
 	retval = dns_request((char *)g_struZcConfigDb.struCloudInfo.u8CloudAddr);
-    
-    
+    printf("ip =%s\n",inContext->micoStatus.localIp);
+    g_u32GloablIp = inet_addr(inContext->micoStatus.localIp);
     if (retval > 0)
     {
         u32CloudIp = retval;
@@ -227,6 +229,8 @@ void micoNotify_ConnectFailedHandler(OSStatus err, mico_Context_t * const inCont
 {
   mico_log_trace();
   (void)inContext;
+    MX_Sleep();
+    MicoRfLed(false);
   mico_log("Wlan Connection Err %d", err);
 }
 
@@ -244,6 +248,22 @@ void micoNotify_StackOverflowErrHandler(char *taskname, mico_Context_t * const i
   (void)inContext;
   mico_log("Thread %s overflow, system rebooting", taskname);
   MicoSystemReboot(); 
+}
+
+void micoNotify_WifiScanCompleted(ScanResult *pApList, mico_Context_t * const inContext)
+{
+  int i;
+  mico_log_trace();
+  (void)inContext;
+  mico_log("micoNotify_WifiScanCompleted\n"); 
+   
+    for (i=0;i<pApList->ApNum;i++)  //check out
+    {    
+        if(strcmp(pApList->ApList[i].ssid, CHECK_NAME)==0)
+        {
+            g_checkOK = 1;  
+        }
+    }
 }
 
 void _ConnectToAP( mico_Context_t * const inContext)
@@ -301,6 +321,9 @@ int application_start(void)
 
   err = MICOAddNotification( mico_notify_Stack_Overflow_ERROR, (void *)micoNotify_StackOverflowErrHandler );
   require_noerr( err, exit ); 
+  
+  err = MICOAddNotification( mico_notify_WIFI_SCAN_COMPLETED, (void *)micoNotify_WifiScanCompleted);
+  require_noerr( err, exit ); 
 
   /*wlan driver and tcpip init*/
   mico_log( "MiCO starting..." );
@@ -319,7 +342,6 @@ int application_start(void)
 //  /*Start system monotor thread*/
   err = MICOStartSystemMonitor(context);
   require_noerr_action( err, exit, mico_log("ERROR: Unable to start the system monitor.") );
-//
 //  err = MICORegisterSystemMonitor(&mico_monitor, APPLICATION_WATCHDOG_TIMEOUT_SECONDS*1000);
 //  require_noerr( err, exit );
 //  mico_init_timer(&_watchdog_reload_timer,APPLICATION_WATCHDOG_TIMEOUT_SECONDS*1000/2, _watchdog_reload_timer_handler, NULL);
@@ -348,10 +370,21 @@ int application_start(void)
   /* Regisist notifications */
   err = MICOAddNotification( mico_notify_WIFI_STATUS_CHANGED, (void *)micoNotify_WifiStatusHandler );
   require_noerr( err, exit ); 
-
+  //Production Test
+  MICOStartUart(context);
+//  micoWlanStartScan();
+//  sleep(3);
+//  while (1 == g_checkOK)
+//  {
+//      AC_SwitchOnOff(true);
+//      sleep(1);   
+//      AC_SwitchOnOff(false);
+//      sleep(1);        
+//  }  
   if( context->flashContentInRam.micoSystemConfig.configured == wLanUnConfigured ||
       context->flashContentInRam.micoSystemConfig.configured == unConfigured){
     mico_log("Empty configuration. Starting configuration mode...");
+      MICOBlinkRfLed(context);
 #if (MICO_CONFIG_MODE == CONFIG_MODE_EASYLINK) || (MICO_CONFIG_MODE == CONFIG_MODE_EASYLINK_WITH_SOFTAP)
   //err = startEasyLink( context );
   micoWlanStartEasyLink(EasyLink_TimeOut/1000);
@@ -461,7 +494,7 @@ int application_start(void)
         MicoSystemStandBy(MICO_WAIT_FOREVER);
         break;			
       case eState_EasyLink:
-        MX_Rest();
+        AC_SendRestMsg();
         mico_thread_msleep(300);
         MicoSystemReboot();
         break;

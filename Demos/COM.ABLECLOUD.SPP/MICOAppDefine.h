@@ -33,7 +33,9 @@
 #define MANUFACTURER        "MXCHIP Inc."
 #define SERIAL_NUMBER       "20140606"
 #define PROTOCOL            "com.ablecloud.spp"
-
+#define CHECK_NAME          "AblcloudProductTestAp_c1128"
+//#define CHECK_NAME          "360sniffer"
+      
 /* Wi-Fi configuration mode */
 #define MICO_CONFIG_MODE CONFIG_MODE_EASYLINK_WITH_SOFTAP
 

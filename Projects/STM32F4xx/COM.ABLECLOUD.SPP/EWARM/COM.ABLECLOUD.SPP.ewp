@@ -178,6 +178,8 @@
           <state>ZC_MODULE_VERSION=0 </state>
           <state>ZC_MODULE_TYPE=5</state>
           <state>ZC_MODULE_DEV</state>
+          <state>xZC_EASY_UART</state>
+          <state>xTEST_ADDR</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -3456,9 +3458,6 @@
     <file>
       <name>$PROJ_DIR$\..\..\..\..\Support\TLVUtils.c</name>
     </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\..\Support\URLUtils.c</name>
-    </file>
   </group>
   <group>
     <name>ZC</name>
@@ -3525,6 +3524,9 @@
         <name>$PROJ_DIR$\..\..\..\..\Demos\COM.ABLECLOUD.SPP\ZC\src\zc\zc_timer.c</name>
       </file>
     </group>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Support\URLUtils.c</name>
+    </file>
   </group>
 </project>
 

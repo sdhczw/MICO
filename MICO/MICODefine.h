@@ -198,6 +198,8 @@ OSStatus MICOStartApplication           ( mico_Context_t * const inContext );
 OSStatus MICORestoreDefault             ( mico_Context_t * const inContext );
 OSStatus MICOReadConfiguration          ( mico_Context_t * const inContext );
 OSStatus MICOUpdateConfiguration        ( mico_Context_t * const inContext );
+OSStatus MICOStartUart( mico_Context_t * const inContext );
+OSStatus MICOBlinkRfLed(mico_Context_t * const inContext);
 #ifdef MFG_MODE_AUTO
 OSStatus MICORestoreMFG                 ( mico_Context_t * const inContext );
 #endif

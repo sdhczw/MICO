@@ -147,7 +147,7 @@ typedef enum
 
 /* Components connected to external I/Os*/
 #define Standby_SEL         (MICO_GPIO_NONE)
-#define MICO_RF_LED         (MICO_GPIO_NONE)
+#define MICO_RF_LED         (MICO_GPIO_1)
 
 /* I/O connection <-> Peripheral Connections */
 #define MICO_I2C_CP         (MICO_I2C_1)

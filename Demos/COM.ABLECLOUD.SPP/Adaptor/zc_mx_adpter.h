@@ -31,7 +31,6 @@ void MX_Init(void);
 void MX_BcInit(void);
 void MX_WakeUp(void);
 void MX_Sleep(void);
-void MX_ReadDataFormFlash(void);
 void MX_Cloudfunc(void *inContext);
 void MX_CloudRecvfunc(void *inContext);
 void MX_Rest(void);

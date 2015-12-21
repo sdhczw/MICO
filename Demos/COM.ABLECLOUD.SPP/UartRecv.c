@@ -24,11 +24,17 @@
 #include "MicoPlatform.h"
 #include "platform_config.h"
 #include "MICONotificationCenter.h"
+#include <ac_hal.h>
 
 #define uart_recv_log(M, ...) custom_log("UART RECV", M, ##__VA_ARGS__)
 #define uart_recv_log_trace() custom_log_trace("UART RECV")
 
 static size_t _uart_get_one_packet(uint8_t* buf, int maxlen);
+
+void AC_UartSend(u8* inBuf, u32 datalen)
+{
+    MicoUartSend(UART_FOR_APP, inBuf, datalen);
+}
 
 void uartRecv_thread(void *inContext)
 {
@@ -43,7 +49,11 @@ void uartRecv_thread(void *inContext)
     recvlen = _uart_get_one_packet(inDataBuffer, UART_ONE_PACKAGE_LENGTH);
     if (recvlen <= 0)
       continue; 
+#ifdef ZC_EASY_UART 
+    AC_UartRecv(inDataBuffer, recvlen);  
+#else
     ZC_Moudlefunc(inDataBuffer, recvlen);
+#endif
   }
   
 exit:

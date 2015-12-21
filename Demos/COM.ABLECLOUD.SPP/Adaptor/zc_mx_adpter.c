@@ -24,7 +24,6 @@ extern PTC_ProtocolCon  g_struProtocolController;
 PTC_ModuleAdapter g_struAdapter;
 
 MSG_Buffer g_struRecvBuffer;
-MSG_Buffer g_struRetxBuffer;
 
 MSG_Queue  g_struRecvQueue;
 MSG_Buffer g_struSendBuffer[MSG_BUFFER_SEND_MAX_NUM];
@@ -113,6 +112,23 @@ void MX_WriteDataToFlash(u8 *pu8Data, u16 u16Len)
     MicoFlashWrite(MICO_FLASH_FOR_EX_PARA,&paraStartAddress, pu8Data, u16Len);
     
     MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA);
+}
+
+/*************************************************
+* Function: MX_ReadDataFormFlash
+* Description: 
+* Author: cxy 
+* Returns: 
+* Parameter: 
+* History:
+*************************************************/
+void MX_ReadDataFormFlash(u8 *pu8Data, u16 u16Len) 
+{
+    u32 configInFlash = EX_PARA_START_ADDRESS;
+    
+    MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);
+    MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)pu8Data, u16Len);
+    MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA);  
 }
 /*************************************************
 * Function: MX_Init
@@ -286,6 +302,7 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     {
         addr.s_ip = u32CloudIp;
         addr.s_port = ZC_CLOUD_PORT;
+        ZC_Printf("connect redirect!\n");
     }
     
     
@@ -540,18 +557,19 @@ u32 MX_ListenClient(PTC_Connection *pstruConnection)
     int fd; 
     struct sockaddr_t servaddr;
 
-    fd = socket(AF_INET, SOCK_STREAM, 0);
+    fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(fd<0)
         return ZC_RET_ERROR;
 
     servaddr.s_port = pstruConnection->u16Port;
+    servaddr.s_ip =  INADDR_ANY;  /* Accept conenction request on all network interface */
     if(bind(fd,(struct sockaddr_t *)&servaddr,sizeof(servaddr))<0)
     {
         close(fd);
         return ZC_RET_ERROR;
     }
     
-    if (listen(fd, 4)< 0)
+    if (listen(fd, ZC_MAX_CLIENT_NUM)< 0)
     {
         close(fd);
         return ZC_RET_ERROR;
@@ -587,7 +605,7 @@ void MX_BcInit()
     struRemoteAddr.s_port = ZC_MOUDLE_BROADCAST_PORT; 
     struRemoteAddr.s_ip = inet_addr("255.255.255.255"); 
     g_pu8RemoteAddr = (u8*)&struRemoteAddr;
-    g_u32BcSleepCount = 500;
+    g_u32BcSleepCount = 415;
     return;
 }
 /*************************************************
@@ -676,6 +694,7 @@ void MX_Init()
     g_struAdapter.pfunSendUdpData = MX_SendUdpData; 
     g_struAdapter.pfunRest = MX_Rest;
     g_struAdapter.pfunWriteFlash = MX_WriteDataToFlash;
+    g_struAdapter.pfunReadFlash = MX_ReadDataFormFlash;
     g_struAdapter.pfunReboot = MX_Reboot;
     g_struAdapter.pfunGetMac = MX_GetMac;
     g_struAdapter.pfunPrintf = (pFunPrintf)printf;
@@ -686,7 +705,6 @@ void MX_Init()
     PCT_Init(&g_struAdapter);
 	MX_TimerInit();
     ZC_Printf("MT Init\n");
-    MX_ReadDataFormFlash();
 }
 
 /*************************************************
@@ -755,32 +773,6 @@ void dns_ip_set(u8 *hostname, u32 ip)
     }
 }
 
-/*************************************************
-* Function: MX_ReadDataFormFlash
-* Description: 
-* Author: cxy 
-* Returns: 
-* Parameter: 
-* History:
-*************************************************/
-void MX_ReadDataFormFlash(void) 
-{
-    u32 configInFlash;
-    u32 u32MagicFlag = 0xFFFFFFFF;
-    
-    configInFlash = EX_PARA_START_ADDRESS;
-    MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);
-    MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)&u32MagicFlag, 4);
-    if (ZC_MAGIC_FLAG == u32MagicFlag)
-    {
-        MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)&g_struZcConfigDb.struConnection, sizeof(ZC_ConfigDB)-4);
-    }
-    else
-    {
-        ZC_Printf("no para, use default\n");
-    }
-    
-}
 /******************************* FILE END ***********************************/
 
 
