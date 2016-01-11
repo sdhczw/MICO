@@ -649,6 +649,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\MICO\MICOCli.c</FilePath>
             </File>
+            <File>
+              <FileName>Airkiss.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\MICO\Airkiss\Airkiss.c</FilePath>
+            </File>
+            <File>
+              <FileName>airkiss_discovery.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\MICO\Airkiss\airkiss_discovery.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -692,6 +702,16 @@
               <FileName>wlan_firmware.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\MICO\Library\RF driver\wlan_firmware.c</FilePath>
+            </File>
+            <File>
+              <FileName>Airkiss_CM3_Debug.a</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\..\..\MICO\Airkiss\Airkiss_CM3_Debug.a</FilePath>
+            </File>
+            <File>
+              <FileName>libairkiss.a</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\..\..\MICO\Airkiss\libairkiss.a</FilePath>
             </File>
           </Files>
         </Group>

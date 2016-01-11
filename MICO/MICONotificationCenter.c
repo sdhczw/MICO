@@ -200,9 +200,7 @@ void easylink_user_data_result(int datalen, char*data)
 void system_version(char *str, int len){
   _Notify_list_t *temp =  Notify_list[mico_notify_READ_APP_INFO];
   if(Notify_list[mico_notify_READ_APP_INFO] == NULL)
-  {
     return;
-  }
   else{
     do{
       ((mico_notify_READ_APP_INFO_function)(temp->function))(str, len, _Context);

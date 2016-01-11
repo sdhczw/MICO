@@ -748,8 +748,10 @@ void RptConfigmodeRslt(network_InitTypeDef_st *nwkpara)
         context->flashContentInRam.micoSystemConfig.configured = allConfigured;
         /*Clear fastlink record*/
         MICOUpdateConfiguration(context);
+#if (MICO_CONFIG_MODE == CONFIG_MODE_EASYLINK) || (MICO_CONFIG_MODE == CONFIG_MODE_EASYLINK_WITH_SOFTAP)
         context->micoStatus.sys_state = eState_Software_Reset;
         mico_rtos_set_semaphore(&context->micoStatus.sys_state_change_sem);
+#endif
     }
 }
 

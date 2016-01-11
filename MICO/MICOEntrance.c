@@ -44,7 +44,12 @@
 #include "WAC/MFi_WAC.h"
 #include "StringUtils.h"
 #include <ac_api.h>
-
+#include "ac_hal.h"
+#ifdef AIRKISS_DISCOVERY_ENABLE
+#include "Airkiss/airkiss_discovery.h"
+#endif
+#define AIRKISS_APP_ID "gh_a009599d0af3"                        
+#define AIRKISS_DEVICE_ID "dev1"
 #if defined (CONFIG_MODE_EASYLINK) || defined (CONFIG_MODE_EASYLINK_WITH_SOFTAP)
 #include "EasyLink/EasyLink.h"
 #endif
@@ -176,6 +181,21 @@ void micoNotify_DHCPCompleteHandler(IPStatusTypedef *pnet, mico_Context_t * cons
         u32CloudIp = retval;
     }
 	MX_WakeUp();
+#ifdef AIRKISS_DISCOVERY_ENABLE
+    {
+          OSStatus err = kNoErr;
+        char deviceid [ZC_HS_DEVICE_ID_LEN+1];
+        memset(deviceid,0,ZC_HS_DEVICE_ID_LEN+1);
+        snprintf( (char *)deviceid, 17, "0000%c%c%c%c%c%c%c%c%c%c%c%c",context->micoStatus.mac[0],  context->micoStatus.mac[1], \
+	                                                   context->micoStatus.mac[3],  context->micoStatus.mac[4],\
+		                                               context->micoStatus.mac[6],  context->micoStatus.mac[7],\
+	                                                   context->micoStatus.mac[9],  context->micoStatus.mac[10], \
+                                                       context->micoStatus.mac[12], context->micoStatus.mac[13],\
+                                                       context->micoStatus.mac[15], context->micoStatus.mac[16]);
+      err = airkiss_discovery_start( AIRKISS_APP_ID, deviceid);
+            require_noerr( err, exit );
+    }
+#endif
     exit:
     return;
 }
@@ -270,7 +290,7 @@ void _ConnectToAP( mico_Context_t * const inContext)
 {
   mico_log_trace();
   network_InitTypeDef_st wNetConfig;
-	  IPStatusTypedef para;
+  IPStatusTypedef para;
   mico_log("connect to %s.....", inContext->flashContentInRam.micoSystemConfig.ssid);
   memset(&wNetConfig, 0x0, sizeof(network_InitTypeDef_st));
   

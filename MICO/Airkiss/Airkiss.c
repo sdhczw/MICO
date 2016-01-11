@@ -75,7 +75,7 @@ void AirkissNotify_WifiStatusHandler(WiFiEvent event, mico_Context_t * const inC
   case NOTIFY_STATION_UP:
     airkiss_log("Access point connected");
     MicoRfLed(true);
-    mico_rtos_set_semaphore(&airkiss_sem);
+   // mico_rtos_set_semaphore(&airkiss_sem);
     micoWlanGetIPStatus(&para, Station);
     strncpy(inContext->flashContentInRam.micoSystemConfig.localIp, para.ip, maxIpLen);
     strncpy(inContext->flashContentInRam.micoSystemConfig.netMask, para.mask, maxIpLen);
@@ -128,6 +128,8 @@ void AirkissNotify_DHCPCompleteHandler(IPStatusTypedef *pnet, mico_Context_t * c
   strcpy((char *)inContext->micoStatus.netMask, pnet->mask);
   strcpy((char *)inContext->micoStatus.gateWay, pnet->gate);
   strcpy((char *)inContext->micoStatus.dnsServer, pnet->dns);
+      mico_rtos_set_semaphore(&airkiss_sem);
+          printf("ip=%s",inContext->flashContentInRam.micoSystemConfig.localIp);
 exit:
   return;
 }
@@ -154,7 +156,7 @@ void AirkissNotify_AirkissCompleteHandler(network_InitTypeDef_st *nwkpara, mico_
 exit:
   airkiss_log("ERROR, err: %d", err);
 
-  ConfigWillStop(inContext);
+ // ConfigWillStop(inContext);
   /*so roll back to previous settings  (if it has) and reboot*/
   mico_rtos_lock_mutex(&inContext->flashContentInRam_mutex);
   if(inContext->flashContentInRam.micoSystemConfig.configured != unConfigured){
@@ -182,12 +184,12 @@ void AirkissNotify_AirkissGetExtraDataHandler(int datalen, char* data, mico_Cont
 
   airkiss_data = data[0];
   mico_rtos_set_semaphore(&airkiss_sem);
-  ConfigAirkissIsSuccess(inContext);
+ // ConfigAirkissIsSuccess(inContext);
 
   return;
 exit:
   airkiss_log("ERROR, err: %d", err);
-  ConfigWillStop(inContext);
+ // ConfigWillStop(inContext);
   MicoSystemReboot();  
   return;
 }
@@ -216,7 +218,7 @@ OSStatus startAirkiss( mico_Context_t * const inContext)
   require_noerr( err, exit ); 
   
   // Start the Airkiss thread
-  ConfigWillStart(inContext);
+  //ConfigWillStart(inContext);
   mico_rtos_init_semaphore(&airkiss_sem, 1);
   err = mico_rtos_create_thread(NULL, MICO_APPLICATION_PRIORITY, "Airkiss", airkiss_thread, 0x1000, (void*)inContext );
   require_noerr_action( err, exit, airkiss_log("ERROR: Unable to start the Airkiss thread.") );
@@ -225,6 +227,31 @@ exit:
   return err;
 }
 
+void _airkissConnectWiFi( mico_Context_t * const inContext)
+{
+ // mico_log_trace();
+  network_InitTypeDef_st wNetConfig;
+  IPStatusTypedef para;
+    
+  memset(&wNetConfig, 0x0, sizeof(network_InitTypeDef_st));
+  
+  mico_rtos_lock_mutex(&inContext->flashContentInRam_mutex);
+  strncpy((char*)wNetConfig.wifi_ssid, inContext->flashContentInRam.micoSystemConfig.ssid, maxSsidLen);
+	strncpy((char*)wNetConfig.wifi_key, inContext->flashContentInRam.micoSystemConfig.user_key, maxKeyLen);
+	wNetConfig.dhcpMode = DHCP_Client;
+	wNetConfig.wifi_mode = Station;
+	  micoWlanGetIPStatus(&para, Station);
+  strncpy((char*)wNetConfig.local_ip_addr, (char *)&para.ip, maxIpLen);
+  strncpy((char*)wNetConfig.net_mask, (char *)&para.mask, maxIpLen);
+  strncpy((char*)wNetConfig.gateway_ip_addr, (char *)&para.dns, maxIpLen);
+  strncpy((char*)wNetConfig.dnsServer_ip_addr, (char *)&para.ip, maxIpLen);
+  wNetConfig.wifi_retry_interval = 500;
+	
+  mico_rtos_unlock_mutex(&inContext->flashContentInRam_mutex);
+
+  micoWlanStart(&wNetConfig);
+}
+#if 0
 void _airkissConnectWiFi( mico_Context_t * const inContext)
 {
   airkiss_log_trace();
@@ -236,7 +263,7 @@ void _airkissConnectWiFi( mico_Context_t * const inContext)
   wNetConfig.ap_info.security = SECURITY_TYPE_AUTO;
   memcpy(wNetConfig.key, inContext->flashContentInRam.micoSystemConfig.user_key, maxKeyLen);
   wNetConfig.key_len = inContext->flashContentInRam.micoSystemConfig.user_keyLength;
-  wNetConfig.dhcpMode = inContext->flashContentInRam.micoSystemConfig.dhcpEnable;
+  wNetConfig.dhcpMode = DHCP_Client;
   strncpy((char*)wNetConfig.local_ip_addr, inContext->flashContentInRam.micoSystemConfig.localIp, maxIpLen);
   strncpy((char*)wNetConfig.net_mask, inContext->flashContentInRam.micoSystemConfig.netMask, maxIpLen);
   strncpy((char*)wNetConfig.gateway_ip_addr, inContext->flashContentInRam.micoSystemConfig.gateWay, maxIpLen);
@@ -245,9 +272,9 @@ void _airkissConnectWiFi( mico_Context_t * const inContext)
   wNetConfig.wifi_retry_interval = 100;
   mico_rtos_unlock_mutex(&inContext->flashContentInRam_mutex);
   micoWlanStartAdv(&wNetConfig);
-  airkiss_log("connect to %s.....", wNetConfig.ap_info.ssid);
+  airkiss_log("_airkissConnectWiFi connect to %s.....", wNetConfig.ap_info.ssid);
 }
-
+#endif
 void _airkissConnectWiFi_fast( mico_Context_t * const inContext)
 {
   airkiss_log_trace();
@@ -333,10 +360,11 @@ void airkiss_thread(void *inContext)
   }  
   Context->flashContentInRam.micoSystemConfig.configured = allConfigured;
   MICOUpdateConfiguration( Context );
-  MicoSystemReboot();
+  msleep(1000);
+ MicoSystemReboot();
 threadexit:
   _cleanAirkissResource( Context );
-  ConfigWillStop( Context );
+  //ConfigWillStop( Context );
   mico_rtos_delete_thread( NULL );
   return;
   
