@@ -205,6 +205,6 @@ OSStatus MICORestoreMFG                 ( mico_Context_t * const inContext );
 #endif
 
 mico_Context_t *getGlobalContext(void);
-void mico_mfg_test( mico_Context_t * const inContext );
+void mxchip_mfg_test( mico_Context_t * const inContext );
 
 #endif /* __MICO_DEFINE_H */

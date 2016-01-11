@@ -134,12 +134,11 @@ static void __asm __jump_to( uint32_t addr )
 #endif
 
 /*Boot to mico application form APPLICATION_START_ADDRESS defined in platform_common_config.h */
-void startApplication(void)
+void startApplication(uint32_t text_addr)
 {
-  uint32_t text_addr = APPLICATION_START_ADDRESS;
   uint32_t* stack_ptr;
   uint32_t* start_ptr;
-  
+
   if (((*(volatile uint32_t*)text_addr) & 0x2FFE0000 ) != 0x20000000)
   text_addr += 0x200;
   /* Test if user code is programmed starting from address "ApplicationAddress" */

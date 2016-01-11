@@ -117,7 +117,6 @@ OSStatus MICOReadConfiguration(mico_Context_t *inContext)
   err = MicoFlashRead(MICO_FLASH_FOR_PARA, &configInFlash, (uint8_t *)&inContext->flashContentInRam, sizeof(flash_content_t));
   seedNum = inContext->flashContentInRam.micoSystemConfig.seed;
   if(seedNum == -1) seedNum = 0;
-  printf("version =%d\n",inContext->flashContentInRam.appConfig.configDataVer);
   if(inContext->flashContentInRam.appConfig.configDataVer != CONFIGURATION_VERSION){
 #ifdef MFG_MODE_AUTO
       err = MICORestoreMFG(inContext);

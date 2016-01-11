@@ -131,6 +131,10 @@ bool MicoShouldEnterMFGMode(void);
 
 bool MicoShouldEnterBootloader(void);
 
+#ifdef MICO_ATE_START_ADDRESS
+bool MicoShouldEnterATEMode(void);
+#endif
+
 char *mico_get_bootloader_ver(void);
 #ifdef BOOTLOADER 
 void mico_set_bootload_ver(void);

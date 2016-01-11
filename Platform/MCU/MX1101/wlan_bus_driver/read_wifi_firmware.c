@@ -49,14 +49,13 @@ uint32_t platform_get_wifi_image(unsigned char* buffer, uint32_t size, uint32_t 
     uint32_t buffer_size;
     buffer_size = MIN(size, (wifi_firmware_image_size - offset));
     memcpy(buffer, &wifi_firmware_image[offset], buffer_size);
-
     return buffer_size;
 }
 
 #else
-
+#if 0
 static uint32_t image_size = DRIVER_FLASH_SIZE;
-
+extern uint32_t wifi_firmware_image_size;
 uint32_t platform_get_wifi_image_size(void)
 {
 #define READ_LEN 2048
@@ -94,7 +93,25 @@ uint32_t platform_get_wifi_image(unsigned char* buffer, uint32_t size, uint32_t 
     buffer_size = MIN(size, (image_size - offset));
     FlashAddress += offset;
 
+
     MicoFlashRead(MICO_FLASH_FOR_DRIVER, &FlashAddress, buffer, buffer_size);
     return buffer_size;
 }
+#endif
+extern uint32_t wifi_firmware_image_size;
+extern unsigned char wifi_firmware_image[];
+
+uint32_t platform_get_wifi_image_size(void)
+{
+  return wifi_firmware_image_size;
+}
+
+uint32_t platform_get_wifi_image(unsigned char* buffer, uint32_t size, uint32_t offset)
+{
+  uint32_t buffer_size;
+  buffer_size = MIN(size, (platform_get_wifi_image_size() - offset));
+  memcpy(buffer, &wifi_firmware_image[offset], buffer_size);
+  return buffer_size;
+}
+
 #endif

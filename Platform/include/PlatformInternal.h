@@ -38,7 +38,7 @@ void init_clocks( void );
 void init_memory( void );
 void init_architecture( void) ;
 void init_platform_bootloader( void );
-void startApplication( void );
+void startApplication( uint32_t text_addr );
 
 #endif // __PlatformInternal_h__
 

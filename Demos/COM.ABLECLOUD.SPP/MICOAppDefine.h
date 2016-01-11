@@ -28,6 +28,16 @@
 #include "Common.h"
 
 #define APP_INFO  "3088@Ablecloud"
+#ifdef ZC_EASY_UART
+#define UART_INFO "easyuart"
+#else
+#define UART_INFO "zuart"
+#endif
+#ifdef TEST_ADDR
+#define ADDR_INFO "test.ablecloud.cn"
+#else
+#define ADDR_INFO "device.ablecloud.cn"
+#endif
 
 #define FIRMWARE_REVISION   "MICO_SPP_2_4"
 #define MANUFACTURER        "MXCHIP Inc."
@@ -70,6 +80,9 @@
 typedef struct{
   /*Local clients port list*/
   uint32_t          configDataVer;
+      /*IO settings*/
+  uint8_t              uuid[33];
+  uint8_t           resetflag;
 } application_config_t;
 void uartRecv_thread(void *inContext);
 

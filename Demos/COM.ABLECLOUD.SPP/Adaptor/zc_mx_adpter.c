@@ -350,13 +350,14 @@ u32 MX_FirmwareUpdate(u8 *pu8FileData, u32 u32Offset, u32 u32DataLen)
 	u32  u32UpdataAddr= UPDATE_START_ADDRESS;
 
     if (0 == u32Offset)
-    {
+    {   
         MicoFlashInitialize(MICO_FLASH_FOR_UPDATE);
         MicoFlashErase(MICO_FLASH_FOR_UPDATE, UPDATE_START_ADDRESS, UPDATE_END_ADDRESS);
     }
     u32UpdataAddr = u32UpdataAddr + u32Offset;
     
     MicoFlashWrite(MICO_FLASH_FOR_UPDATE,&u32UpdataAddr, pu8FileData, u32DataLen);
+
     return ZC_RET_OK;
 }
 /*************************************************

@@ -122,7 +122,7 @@ static char * ssid_get(void)
 }
 
 #if (MFG_FUNCTION == 1) 
-void mico_mfg_test(mico_Context_t *inContex)
+void mxchip_mfg_test(mico_Context_t *inContex)
 {
   char str[80];
   char mac[6];
@@ -149,9 +149,20 @@ void mico_mfg_test(mico_Context_t *inContex)
   sprintf(str, "Library Version: %s\r\n", system_lib_version());
   mf_printf(str);
   mf_printf("APP Version: ");
-  memset(str, 0, sizeof(str));
-  system_version(str, sizeof(str));
-  mf_printf(str);
+  //memset(str, 0, sizeof(str));
+  //system_version(str, sizeof(str));
+  mf_printf(APP_INFO);
+   sprintf(str, "%d.%d.%d",(u8)(ZC_MODULE_VERSION >> 16),(u8)(ZC_MODULE_VERSION >> 8),(u8)(ZC_MODULE_VERSION));
+  mf_printf("\r\n");
+  mf_printf("Uart Info: ");
+  //memset(str, 0, sizeof(str));
+  //system_version(str, sizeof(str));
+  mf_printf(UART_INFO);
+  mf_printf("\r\n");
+  mf_printf("Server Info: ");
+  //memset(str, 0, sizeof(str));
+  //system_version(str, sizeof(str));
+  mf_printf(ADDR_INFO);
   mf_printf("\r\n");
   memset(str, 0, sizeof(str));
   wlan_driver_version(str, sizeof(str));
@@ -172,7 +183,7 @@ exit:
   mico_thread_sleep(MICO_NEVER_TIMEOUT);
 }
 #elif (MFG_FUNCTION == 2)
-void mico_mfg_test(mico_Context_t *inContext)
+void mxchip_mfg_test(mico_Context_t *inContext)
 {
   network_InitTypeDef_adv_st wNetConfig;
   int testCommandFd, scanFd;

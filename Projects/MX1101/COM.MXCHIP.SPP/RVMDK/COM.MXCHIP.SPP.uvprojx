@@ -305,7 +305,7 @@
               </OCR_RVCT3>
               <OCR_RVCT4>
                 <Type>1</Type>
-                <StartAddress>0xd000</StartAddress>
+                <StartAddress>0xb000</StartAddress>
                 <Size>0xc0000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
@@ -359,7 +359,7 @@
             <useXO>0</useXO>
             <VariousControls>
               <MiscControls>--diag_suppress=1,1293</MiscControls>
-              <Define>DEBUG ZC_MODULE_VERSION=0 ZC_MODULE_TYPE=5 xZC_MODULE_DEV</Define>
+              <Define>DEBUG ZC_MODULE_VERSION=0 ZC_MODULE_TYPE=5 ZC_MODULE_DEV ZC_EASY_UART TEST_ADDR</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Demos\COM.ABLECLOUD.SPP;..\..\..\..\include;..\..\..\..\MICO;..\..\..\..\External;..\..\..\..\Support;..\..\..\..\Board\MicoKit-3088;..\..\..\..\Platform\include;..\..\..\..\Platform\Cortex-M3;..\..\..\..\Platform\Cortex-M3\CMSIS;..\..\..\..\Platform\MCU\MX1101\peripherals\Libraries\inc;..\..\..\..\Platform\MCU\MX1101\peripherals;..\..\..\..\Demos\COM.ABLECLOUD.SPP\ZC\inc\aes;..\..\..\..\Demos\COM.ABLECLOUD.SPP\ZC\inc\zc;..\..\..\..\Demos\COM.ABLECLOUD.SPP\ZC\inc\tropicssl;..\..\..\..\Demos\COM.ABLECLOUD.SPP\AC\inc;..\..\..\..\Demos\COM.ABLECLOUD.SPP\Adaptor</IncludePath>
             </VariousControls>

@@ -91,10 +91,13 @@ int main(void)
 #endif
   
   if(MicoShouldEnterBootloader() == false)
-    startApplication();
+    startApplication(APPLICATION_START_ADDRESS);
   else if(MicoShouldEnterMFGMode() == true)
-    startApplication();
-
+    startApplication(APPLICATION_START_ADDRESS);
+#ifdef MICO_ATE_START_ADDRESS
+    else if( MicoShouldEnterATEMode() )
+        startApplication(MICO_ATE_START_ADDRESS);
+#endif
   printf ( menu, MODEL, HARDWARE_REVISION );
 
   while(1){                             

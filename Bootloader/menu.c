@@ -105,7 +105,7 @@ char ERROR_STR [] = "\n\r*** ERROR: %s\n\r";    /* ERROR message string in code 
 
 extern char menu[];
 extern void getline (char *line, int n);          /* input line               */
-extern void startApplication(void);
+extern void startApplication(uint32_t text_addr);
 
 /* Private function prototypes -----------------------------------------------*/
 void SerialDownload(mico_flash_t flash, uint32_t flashdestination, int32_t maxRecvSize);
@@ -428,7 +428,7 @@ void Main_Menu(void)
     /***************** Command: Excute the application *************************/
     else if(strcmp(cmdname, "BOOT") == 0 || strcmp(cmdname, "6") == 0)	{
       printf ("\n\rBooting.......\n\r");
-      startApplication();
+      startApplication(APPLICATION_START_ADDRESS);
     }
 
    /***************** Command: Reboot *************************/

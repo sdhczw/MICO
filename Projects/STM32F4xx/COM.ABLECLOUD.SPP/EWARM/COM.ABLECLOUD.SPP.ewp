@@ -179,7 +179,7 @@
           <state>ZC_MODULE_TYPE=5</state>
           <state>ZC_MODULE_DEV</state>
           <state>xZC_EASY_UART</state>
-          <state>xTEST_ADDR</state>
+          <state>TEST_ADDR</state>
         </option>
         <option>
           <name>CCPreprocFile</name>

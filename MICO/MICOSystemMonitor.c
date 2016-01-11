@@ -63,9 +63,8 @@ void mico_system_monitor_thread_main( void* arg )
   
   while (1)
   {   
-    unsigned char i;
     MicoWdgReload();
-    mico_thread_msleep(DEFAULT_SYSTEM_MONITOR_PERIOD);   
+    mico_thread_msleep(DEFAULT_SYSTEM_MONITOR_PERIOD);    
   }
 }
 

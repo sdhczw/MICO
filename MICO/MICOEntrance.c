@@ -339,7 +339,7 @@ int application_start(void)
   mico_log("%s mxchipWNet library version: %s", APP_INFO, MicoGetVer());
   mico_log("Wi-Fi driver version %s, mac %s", wifi_ver, context->micoStatus.mac);
  
-//  /*Start system monotor thread*/
+  /*Start system monotor thread*/
   err = MICOStartSystemMonitor(context);
   require_noerr_action( err, exit, mico_log("ERROR: Unable to start the system monitor.") );
 //  err = MICORegisterSystemMonitor(&mico_monitor, APPLICATION_WATCHDOG_TIMEOUT_SECONDS*1000);
@@ -348,11 +348,11 @@ int application_start(void)
 //  mico_start_timer(&_watchdog_reload_timer);
 
   /* Enter test mode, call a build-in test function amd output on MFG UART */
-  if(MicoShouldEnterMFGMode()==true)
-  {
-    mico_log( "Enter MFG mode by MFG button" );
-    mico_mfg_test(context);
-  }
+//  if(MicoShouldEnterMFGMode()==true)
+//  {
+//    mico_log( "Enter MFG mode by MFG button" );
+//    mxchip_mfg_test(context);
+//  }
   
   /*Read current time from RTC.*/
 //  if( MicoRtcGetTime(&time) == kNoErr ){
@@ -432,7 +432,7 @@ int application_start(void)
 #ifdef MFG_MODE_AUTO
   else if( context->flashContentInRam.micoSystemConfig.configured == mfgConfigured ){
     mico_log( "Enter MFG mode automatically" );
-    mico_mfg_test(context);
+    mxchip_mfg_test(context);
     mico_thread_sleep(MICO_NEVER_TIMEOUT);
   }
 #endif

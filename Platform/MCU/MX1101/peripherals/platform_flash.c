@@ -442,6 +442,9 @@ OSStatus platform_flash_erase( platform_flash_driver_t *driver, uint32_t StartAd
 
   if( driver->peripheral->flash_type == FLASH_TYPE_SPI ){
     err = SpiFlashErase( StartAddress, EndAddress - StartAddress +1 );
+#ifndef MICO_DISABLE_WATCHDOG
+        WdgFeed();
+#endif
     require_noerr(err, exit);
   }else{
     err = kTypeErr;
@@ -463,6 +466,9 @@ OSStatus platform_flash_write( platform_flash_driver_t *driver, volatile uint32_
 
   if( driver->peripheral->flash_type == FLASH_TYPE_SPI ){
     err = SpiFlashWrite(*FlashAddress, Data, DataLength);
+#ifndef MICO_DISABLE_WATCHDOG
+        WdgFeed();
+#endif
     require_noerr(err, exit);
     *FlashAddress += DataLength;
   }else{
@@ -486,6 +492,9 @@ OSStatus platform_flash_read( platform_flash_driver_t *driver, volatile uint32_t
   
   if( driver->peripheral->flash_type == FLASH_TYPE_SPI ){
     err = SpiFlashRead(*FlashAddress, Data, DataLength);
+#ifndef MICO_DISABLE_WATCHDOG
+        WdgFeed();
+#endif
     require_noerr(err, exit);
     *FlashAddress += DataLength;
   }else{
