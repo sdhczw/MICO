@@ -49,7 +49,7 @@
 #include "Airkiss/airkiss_discovery.h"
 #endif
 #define AIRKISS_APP_ID "gh_a009599d0af3"                        
-#define AIRKISS_DEVICE_ID "dev1"
+
 #if defined (CONFIG_MODE_EASYLINK) || defined (CONFIG_MODE_EASYLINK_WITH_SOFTAP)
 #include "EasyLink/EasyLink.h"
 #endif
@@ -59,7 +59,7 @@
 #endif
  mico_Context_t *context;
 uint8_t g_checkOK = 0;
-
+char deviceid [ZC_HS_DEVICE_ID_LEN+1];
 const char *eaProtocols[1] = {EA_PROTOCOL};
 
 #define mico_log(M, ...) custom_log("MICO", M, ##__VA_ARGS__)
@@ -184,7 +184,6 @@ void micoNotify_DHCPCompleteHandler(IPStatusTypedef *pnet, mico_Context_t * cons
 #ifdef AIRKISS_DISCOVERY_ENABLE
     {
           OSStatus err = kNoErr;
-        char deviceid [ZC_HS_DEVICE_ID_LEN+1];
         memset(deviceid,0,ZC_HS_DEVICE_ID_LEN+1);
         snprintf( (char *)deviceid, 17, "0000%c%c%c%c%c%c%c%c%c%c%c%c",context->micoStatus.mac[0],  context->micoStatus.mac[1], \
 	                                                   context->micoStatus.mac[3],  context->micoStatus.mac[4],\
