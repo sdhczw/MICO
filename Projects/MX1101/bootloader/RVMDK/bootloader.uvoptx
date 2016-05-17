@@ -1218,7 +1218,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>JL2CM3</Key>
-          <Name>-U4294967295 -O78 -S9 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(4) -TO18 -TC10000000 -TP21 -TDS8001 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO7 -FD20000000 -FC9000 -FN1 -FF0MV18X_16MB_V1.5.3 -FS00 -FL01000000</Name>
+          <Name>-U4294967295 -O78 -S9 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("no SW-DP found") -D00(83F00C77) -L00(0) -TO18 -TC10000000 -TP21 -TDS8001 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO7 -FD20000000 -FC9000 -FN1 -FF0MV18X_16MB_V1.5.3 -FS00 -FL01000000</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -1464,7 +1464,7 @@
         <tRSysVw>1</tRSysVw>
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
-        <nTsel>1</nTsel>
+        <nTsel>6</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -1475,7 +1475,7 @@
         <tDlgDll></tDlgDll>
         <tDlgPa></tDlgPa>
         <tIfile></tIfile>
-        <pMon>BIN\UL2CM3.DLL</pMon>
+        <pMon>Segger\JL2CM3.dll</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>
         <SetRegEntry>
@@ -1506,12 +1506,12 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>JL2CM3</Key>
-          <Name>-U20080643 -O78 -S0 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(4) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO7 -FD20000000 -FC9000 -FN1 -FF0MV18X_16MB_V1.5.3 -FS00 -FL01000000</Name>
+          <Name>-U4294967295 -O78 -S9 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(1BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8001 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO7 -FD20000000 -FC9000 -FN1 -FF0MV18X_16MB_V1.5.3 -FS00 -FL01000000</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
           <Key>UL2CM3</Key>
-          <Name>-UV0010M9E -O206 -S10 -C0 -P00 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO3 -FD20000000 -FC9000 -FN1 -FF0MV18X_16MB_V1.5.3 -FS00 -FL01000000</Name>
+          <Name>-UV0010M9E -O14 -S0 -C0 -P00 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO3 -FD20000000 -FC9000 -FN1 -FF0MV18X_16MB_V1.5.3 -FS00 -FL01000000</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
@@ -1752,7 +1752,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>55</TopLine>
+      <TopLine>48</TopLine>
       <CurrentLine>93</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Bootloader\BootloaderEntrance.c</PathWithFileName>
@@ -1784,7 +1784,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>404</TopLine>
+      <TopLine>394</TopLine>
       <CurrentLine>431</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Bootloader\menu.c</PathWithFileName>
@@ -1888,7 +1888,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>95</TopLine>
+      <TopLine>98</TopLine>
       <CurrentLine>132</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\include\MicoPlatform.h</PathWithFileName>
@@ -1952,7 +1952,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>30</TopLine>
+      <TopLine>42</TopLine>
       <CurrentLine>43</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\include\MicoWlan.h</PathWithFileName>
@@ -2032,7 +2032,7 @@
       <Focus>0</Focus>
       <ColumnNumber>35</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>95</TopLine>
+      <TopLine>87</TopLine>
       <CurrentLine>120</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\Cortex-M3\hardfault.c</PathWithFileName>
@@ -2110,10 +2110,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>45</ColumnNumber>
+      <ColumnNumber>37</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>25</TopLine>
-      <CurrentLine>26</CurrentLine>
+      <TopLine>256</TopLine>
+      <CurrentLine>361</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\mico_platform_common.c</PathWithFileName>
       <FilenameWithoutPath>mico_platform_common.c</FilenameWithoutPath>
@@ -2128,8 +2128,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>18</TopLine>
-      <CurrentLine>36</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\wlan_platform_common.c</PathWithFileName>
       <FilenameWithoutPath>wlan_platform_common.c</FilenameWithoutPath>
@@ -2152,7 +2152,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>120</TopLine>
+      <TopLine>140</TopLine>
       <CurrentLine>141</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\platform_init.c</PathWithFileName>
@@ -2286,10 +2286,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>18</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>460</TopLine>
-      <CurrentLine>495</CurrentLine>
+      <TopLine>40</TopLine>
+      <CurrentLine>98</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\peripherals\platform_flash.c</PathWithFileName>
       <FilenameWithoutPath>platform_flash.c</FilenameWithoutPath>
@@ -2302,10 +2302,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2557384</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>162</TopLine>
+      <CurrentLine>180</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\peripherals\platform_gpio.c</PathWithFileName>
       <FilenameWithoutPath>platform_gpio.c</FilenameWithoutPath>
@@ -2336,7 +2336,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>98</TopLine>
+      <TopLine>96</TopLine>
       <CurrentLine>99</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\peripherals\platform_mcu_powersave.c</PathWithFileName>
@@ -2400,8 +2400,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>42</TopLine>
-      <CurrentLine>92</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>80</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\peripherals\platform_spi.c</PathWithFileName>
       <FilenameWithoutPath>platform_spi.c</FilenameWithoutPath>
@@ -2448,7 +2448,7 @@
       <Focus>0</Focus>
       <ColumnNumber>8</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>63</TopLine>
+      <TopLine>55</TopLine>
       <CurrentLine>91</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Platform\MCU\MX1101\peripherals\platform_watchdog.c</PathWithFileName>
@@ -2608,8 +2608,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>472</TopLine>
-      <CurrentLine>496</CurrentLine>
+      <TopLine>91</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Board\MiCOKit-3088\platform.c</PathWithFileName>
       <FilenameWithoutPath>platform.c</FilenameWithoutPath>
@@ -2624,8 +2624,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>51</TopLine>
+      <CurrentLine>69</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Board\MiCOKit-3088\platform.h</PathWithFileName>
       <FilenameWithoutPath>platform.h</FilenameWithoutPath>
@@ -2662,10 +2662,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2557384</ColumnNumber>
+      <ColumnNumber>55</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>283</TopLine>
+      <CurrentLine>319</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Board\EMW5088\platform.c</PathWithFileName>
       <FilenameWithoutPath>platform.c</FilenameWithoutPath>
@@ -2678,10 +2678,10 @@
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2557384</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>54</TopLine>
+      <CurrentLine>55</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Board\EMW5088\platform.h</PathWithFileName>
       <FilenameWithoutPath>platform.h</FilenameWithoutPath>

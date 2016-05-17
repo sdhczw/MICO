@@ -176,7 +176,9 @@
           <state>DEBUG</state>
           <state>ZC_MODULE_VERSION=0 </state>
           <state>ZC_MODULE_TYPE=5</state>
-          <state>xZC_MODULE_DEV</state>
+          <state>TEST_ADDR</state>
+          <state>ZC_MODULE_DEV</state>
+          <state>ZC_EASY_UART</state>
         </option>
         <option>
           <name>CCPreprocFile</name>

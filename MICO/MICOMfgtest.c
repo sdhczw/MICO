@@ -151,8 +151,10 @@ void mxchip_mfg_test(mico_Context_t *inContex)
   mf_printf("APP Version: ");
   //memset(str, 0, sizeof(str));
   //system_version(str, sizeof(str));
-  mf_printf(APP_INFO);
-   sprintf(str, "%d.%d.%d",(u8)(ZC_MODULE_VERSION >> 16),(u8)(ZC_MODULE_VERSION >> 8),(u8)(ZC_MODULE_VERSION));
+  sprintf(str, "%s, build at %s %s, ", APP_INFO, __TIME__, __DATE__);
+  mf_printf(str);
+  sprintf(str, "%d.%d.%d",(u8)(ZC_MODULE_VERSION >> 16),(u8)(ZC_MODULE_VERSION >> 8),(u8)(ZC_MODULE_VERSION));
+  mf_printf(str);
   mf_printf("\r\n");
   mf_printf("Uart Info: ");
   //memset(str, 0, sizeof(str));

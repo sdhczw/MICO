@@ -129,7 +129,7 @@
         <option>
           <name>GeneralMisraRules04</name>
           <version>0</version>
-          <state>011111111111111110111111111111011111111111111011110100111111111111111111111111111111111111111111101111111111111011111111111111111111111111111</state>
+          <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
         </option>
         <option>
           <name>RTConfigPath2</name>
@@ -3167,7 +3167,16 @@
       <name>$PROJ_DIR$\..\..\..\..\MICO\MICOEntrance.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\..\MICO\MICOMfgtest.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\..\MICO\MICONotificationCenter.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\MICO\MICONTPClient.c</name>
+      <excluded>
+        <configuration>MiCOKit-3165</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\MICO\MICOParaStorage.c</name>
