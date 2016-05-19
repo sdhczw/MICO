@@ -48,7 +48,7 @@
 #ifdef AIRKISS_DISCOVERY_ENABLE
 #include "Airkiss/airkiss_discovery.h"
 #endif
-#define AIRKISS_APP_ID "gh_a009599d0af3"                        
+#define AIRKISS_APP_ID "gh_0546d5413f1d"                        
 
 #if defined (CONFIG_MODE_EASYLINK) || defined (CONFIG_MODE_EASYLINK_WITH_SOFTAP)
 #include "EasyLink/EasyLink.h"

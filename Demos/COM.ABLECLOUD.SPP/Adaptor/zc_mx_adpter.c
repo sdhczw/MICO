@@ -142,37 +142,16 @@ void MX_CloudRecvfunc(void *inContext)
 {
     s32 s32RecvLen=0; 
     fd_set fdread;
-    u32 u32Index;
-    u32 u32Len=0; 
     u32 u32ActiveFlag = 0;
-    struct sockaddr_t cliaddr;
-    int connfd;
-    extern u8 g_u8ClientStart;
     u32 u32MaxFd = 0;
-    struct timeval_t timeout; 
-    struct sockaddr_t addr;
-    int tmp=1;    
-    s8 s8ret = 0;
-    
-
-    ZC_StartClientListen();
-    
+    struct timeval_t timeout;  
+    s8 s8ret = 0;       
     u32ActiveFlag = 0;
     
     timeout.tv_sec= 0; 
     timeout.tv_usec= 1000; 
     
-    FD_ZERO(&fdread);
-    
-    FD_SET(g_Bcfd, &fdread);
-    u32MaxFd = u32MaxFd > g_Bcfd ? u32MaxFd : g_Bcfd;
-    
-    if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
-    {
-        FD_SET(g_struProtocolController.struClientConnection.u32Socket, &fdread);
-        u32MaxFd = u32MaxFd > g_struProtocolController.struClientConnection.u32Socket ? u32MaxFd : g_struProtocolController.struClientConnection.u32Socket;
-        u32ActiveFlag = 1;
-    }
+    FD_ZERO(&fdread);   
     
     if ((g_struProtocolController.u8MainState >= PCT_STATE_WAIT_ACCESSRSP) 
         && (g_struProtocolController.u8MainState < PCT_STATE_DISCONNECT_CLOUD))
@@ -180,17 +159,6 @@ void MX_CloudRecvfunc(void *inContext)
         FD_SET(g_struProtocolController.struCloudConnection.u32Socket, &fdread);
         u32MaxFd = u32MaxFd > g_struProtocolController.struCloudConnection.u32Socket ? u32MaxFd : g_struProtocolController.struCloudConnection.u32Socket;
         u32ActiveFlag = 1;
-    }
-    
-    
-    for (u32Index = 0; u32Index < ZC_MAX_CLIENT_NUM; u32Index++)
-    {
-        if (0 == g_struClientInfo.u32ClientVaildFlag[u32Index])
-        {
-            FD_SET(g_struClientInfo.u32ClientFd[u32Index], &fdread);
-            u32MaxFd = u32MaxFd > g_struClientInfo.u32ClientFd[u32Index] ? u32MaxFd : g_struClientInfo.u32ClientFd[u32Index];
-            u32ActiveFlag = 1;            
-        }
     }
     
     
@@ -225,57 +193,126 @@ void MX_CloudRecvfunc(void *inContext)
         }
         
     }
+}
+
+/*************************************************
+* Function: MX_Init
+* Description: 
+* Author: cxy 
+* Returns: 
+* Parameter: 
+* History:
+*************************************************/
+void MX_LocalServerfunc(void *inContext)
+{
+    s32 s32RecvLen=0; 
+    fd_set fdread;
+    u32 u32Index;
+    u32 u32Len=0; 
+    u32 u32ActiveFlag = 0;
+    struct sockaddr_t cliaddr;
+    int connfd;
+    extern u8 g_u8ClientStart;
+    u32 u32MaxFd = 0;
+    struct timeval_t timeout; 
+    struct sockaddr_t addr;
+    int tmp=1;    
+    s8 s8ret = 0;
     
-    
-    for (u32Index = 0; u32Index < ZC_MAX_CLIENT_NUM; u32Index++)
+    while(1)
     {
-        if (0 == g_struClientInfo.u32ClientVaildFlag[u32Index])
+         mico_thread_msleep(5);
+        ZC_StartClientListen();
+        
+        u32ActiveFlag = 0;
+        
+        timeout.tv_sec= 0; 
+        timeout.tv_usec= 1000; 
+        
+        FD_ZERO(&fdread);
+        
+        FD_SET(g_Bcfd, &fdread);
+        u32MaxFd = u32MaxFd > g_Bcfd ? u32MaxFd : g_Bcfd;
+        
+        if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
         {
-            if (FD_ISSET(g_struClientInfo.u32ClientFd[u32Index], &fdread))
+            FD_SET(g_struProtocolController.struClientConnection.u32Socket, &fdread);
+            u32MaxFd = u32MaxFd > g_struProtocolController.struClientConnection.u32Socket ? u32MaxFd : g_struProtocolController.struClientConnection.u32Socket;
+            u32ActiveFlag = 1;
+        }        
+        
+        for (u32Index = 0; u32Index < ZC_MAX_CLIENT_NUM; u32Index++)
+        {
+            if (0 == g_struClientInfo.u32ClientVaildFlag[u32Index])
             {
-                s32RecvLen = recv(g_struClientInfo.u32ClientFd[u32Index], g_u8recvbuffer, MX_MAX_SOCKET_LEN, 0); 
-                if (s32RecvLen > 0)
-                {
-                    ZC_RecvDataFromClient(g_struClientInfo.u32ClientFd[u32Index], g_u8recvbuffer, s32RecvLen);
-                }
-                else
-                {   
-                    ZC_ClientDisconnect(g_struClientInfo.u32ClientFd[u32Index]);
-                    close(g_struClientInfo.u32ClientFd[u32Index]);
-                }
-                
+                FD_SET(g_struClientInfo.u32ClientFd[u32Index], &fdread);
+                u32MaxFd = u32MaxFd > g_struClientInfo.u32ClientFd[u32Index] ? u32MaxFd : g_struClientInfo.u32ClientFd[u32Index];
+                u32ActiveFlag = 1;            
             }
         }
         
-    }
-    
-    if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
-    {
-        if (FD_ISSET(g_struProtocolController.struClientConnection.u32Socket, &fdread))
+        
+        if (0 == u32ActiveFlag)
         {
-            connfd = accept(g_struProtocolController.struClientConnection.u32Socket,(struct sockaddr_t *)&cliaddr,(socklen_t *)&u32Len);
-            
-            if (ZC_RET_ERROR == ZC_ClientConnect((u32)connfd))
+            continue;
+        }
+        
+        s8ret = select(u32MaxFd + 1, &fdread, NULL, NULL, &timeout);
+        if(s8ret<=0)
+        {
+            continue ;
+        }
+        
+        
+        for (u32Index = 0; u32Index < ZC_MAX_CLIENT_NUM; u32Index++)
+        {
+            if (0 == g_struClientInfo.u32ClientVaildFlag[u32Index])
             {
-                close(connfd);
+                if (FD_ISSET(g_struClientInfo.u32ClientFd[u32Index], &fdread))
+                {
+                    s32RecvLen = recv(g_struClientInfo.u32ClientFd[u32Index], g_u8recvbuffer, MX_MAX_SOCKET_LEN, 0); 
+                    if (s32RecvLen > 0)
+                    {
+                        ZC_RecvDataFromClient(g_struClientInfo.u32ClientFd[u32Index], g_u8recvbuffer, s32RecvLen);
+                    }
+                    else
+                    {   
+                        ZC_ClientDisconnect(g_struClientInfo.u32ClientFd[u32Index]);
+                        close(g_struClientInfo.u32ClientFd[u32Index]);
+                    }
+                    
+                }
             }
-            else
+            
+        }
+        
+        if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
+        {
+            if (FD_ISSET(g_struProtocolController.struClientConnection.u32Socket, &fdread))
             {
-                ZC_Printf("accept client = %d\n", connfd);
+                connfd = accept(g_struProtocolController.struClientConnection.u32Socket,(struct sockaddr_t *)&cliaddr,(socklen_t *)&u32Len);
+                
+                if (ZC_RET_ERROR == ZC_ClientConnect((u32)connfd))
+                {
+                    close(connfd);
+                }
+                else
+                {
+                    ZC_Printf("accept client = %d\n", connfd);
+                }
             }
         }
-    }
-    
-    if (FD_ISSET(g_Bcfd, &fdread))
-    {
-        tmp = sizeof(addr); 
-        s32RecvLen = recvfrom(g_Bcfd, g_u8MsgBuildBuffer, 100, 0, (struct sockaddr_t *)&addr, (socklen_t*)&tmp); 
-        if(s32RecvLen > 0) 
+        
+        if (FD_ISSET(g_Bcfd, &fdread))
         {
-            ZC_SendClientQueryReq(g_u8MsgBuildBuffer, (u16)s32RecvLen);
-        } 
-    }
-    
+            tmp = sizeof(addr); 
+            s32RecvLen = recvfrom(g_Bcfd, g_u8MsgBuildBuffer, 100, 0, (struct sockaddr_t *)&addr, (socklen_t*)&tmp); 
+            if(s32RecvLen > 0) 
+            {
+                ZC_SendClientQueryReq(g_u8MsgBuildBuffer, (u16)s32RecvLen);
+            } 
+        }
+    }   
 }
 
 /*************************************************

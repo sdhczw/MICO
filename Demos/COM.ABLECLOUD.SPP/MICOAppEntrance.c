@@ -114,7 +114,9 @@ OSStatus MICOStartApplication( mico_Context_t * const inContext )
     
 	err = mico_rtos_create_thread(NULL, MICO_APPLICATION_PRIORITY, "HF_Cloudfunc", MX_Cloudfunc, STACK_SIZE_REMOTE_TCP_CLIENT_THREAD, (void*)inContext );
 	require_noerr_action( err, exit, app_log("ERROR: Unable to start the MX_Cloudfunc thread.") );
-
+    
+	err = mico_rtos_create_thread(NULL, MICO_APPLICATION_PRIORITY, "HF_Cloudfunc", MX_LocalServerfunc, STACK_SIZE_REMOTE_TCP_CLIENT_THREAD, (void*)inContext );
+	require_noerr_action( err, exit, app_log("ERROR: Unable to start the MX_Cloudfunc thread.") );
     exit:
     return err;
 }
