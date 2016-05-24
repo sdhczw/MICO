@@ -659,7 +659,7 @@ void MX_Cloudfunc(void *inContext)
     int fd;
     u32 u32Timer = 0;
     
-    MX_BcInit();
+    //MX_BcInit();
     
     while(1) 
     {

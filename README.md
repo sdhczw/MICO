@@ -34,3 +34,7 @@ AbleCloud庆科代码版本入库
 ## 6.AC_MICO_v1.0.8_20160519
 
 1.修改adpter文件，将本地局域网server单独启动线程，支持三种局域网控制方式
+
+## 7.AC_MICO_v1.0.9_20160524
+
+1.修改adpter和MICOEntrance.c文件，修复，先开WIFI，后开路由不能绑定的问题
