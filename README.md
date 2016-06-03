@@ -38,3 +38,7 @@ AbleCloud庆科代码版本入库
 ## 7.AC_MICO_v1.0.9_20160524
 
 1.修改adpter和MICOEntrance.c文件，修复，先开WIFI，后开路由不能绑定的问题
+
+## 8.AC_MICO_v1.0.10_20160603
+
+1.修改了adpter.c和adpter.h文件，修复，路由器断网，设备长时间检测不到的问题

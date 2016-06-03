@@ -314,6 +314,39 @@ void MX_LocalServerfunc(void *inContext)
         }
     }   
 }
+/*************************************************
+* Function: anetKeepAlive
+* Description: 
+* Author: cxy 
+* Returns: 
+* Parameter: 
+* History:
+*************************************************/
+int anetKeepAlive( int fd, int interval)
+{
+    int val = 1;
+    if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, &val, sizeof(val)) == -1)
+    {
+        return -1;
+    }
+    val = interval;
+    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &val, sizeof(val)) < 0) 
+    {
+        return -1;
+    }
+    val = interval/3;
+    if (val == 0) val = 1;
+    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &val, sizeof(val)) < 0)
+    {
+        return -1;
+    }
+    val = 3;
+    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &val, sizeof(val)) < 0)
+    {
+        return -1;
+    }
+    return 0;
+}
 
 /*************************************************
 * Function: MX_ConnectToCloud
@@ -329,6 +362,7 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     int opt = 0;
     struct sockaddr_t addr;
     memset((char*)&addr,0,sizeof(addr));
+		
     
     if (1 == g_struZcConfigDb.struSwitchInfo.u32ServerAddrConfig)
     {
@@ -352,6 +386,7 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     
     fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     setsockopt(fd,0,SO_BLOCKMODE,&opt,4);
+    anetKeepAlive(fd,KEEPIDLE_TIME);
     if(fd<0)
         return ZC_RET_ERROR;
     
@@ -364,9 +399,7 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
         }
         return ZC_RET_ERROR;
     }
-    
     ZC_Printf("connect ok!\n");
-    
     g_struProtocolController.struCloudConnection.u32Socket = fd;
     ZC_Rand(g_struProtocolController.RandMsg);
     
@@ -565,7 +598,10 @@ void MX_GetMac(u8 *pu8Mac)
 *************************************************/
 void MX_SendTcpData(u32 u32Fd, u8 *pu8Data, u16 u16DataLen, ZC_SendParam *pstruParam)
 {
-    send(u32Fd, pu8Data, u16DataLen, 0); 
+		int ret;
+    ret=send(u32Fd, pu8Data, u16DataLen, 0);
+		if(ret<=0)
+			ZC_Printf("send_err!\n");
 }
 
 /*************************************************
@@ -658,9 +694,6 @@ void MX_Cloudfunc(void *inContext)
 {
     int fd;
     u32 u32Timer = 0;
-    
-    //MX_BcInit();
-    
     while(1) 
     {
         mico_thread_msleep(1);

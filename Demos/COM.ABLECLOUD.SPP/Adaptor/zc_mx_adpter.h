@@ -16,7 +16,7 @@
 #include <zc_module_interface.h>
 
 #define MX_MAX_SOCKET_LEN    (1000)
-
+#define KEEPIDLE_TIME 30
 typedef struct 
 {
     u32 u32Interval;  
