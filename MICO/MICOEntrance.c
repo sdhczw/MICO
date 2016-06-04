@@ -142,8 +142,7 @@ void micoNotify_WifiStatusHandler(WiFiEvent event, mico_Context_t * const inCont
     break;
   case NOTIFY_STATION_DOWN:
     mico_log("Station down");
-	MX_Sleep();
-    MX_BcInit();
+		MX_Sleep();
     MicoRfLed(false);
     break;
   case NOTIFY_AP_UP:
@@ -299,7 +298,7 @@ void _ConnectToAP( mico_Context_t * const inContext)
 	strncpy((char*)wNetConfig.wifi_key, inContext->flashContentInRam.micoSystemConfig.user_key, maxKeyLen);
 	wNetConfig.dhcpMode = DHCP_Client;
 	wNetConfig.wifi_mode = Station;
-	  micoWlanGetIPStatus(&para, Station);
+	micoWlanGetIPStatus(&para, Station);
   strncpy((char*)wNetConfig.local_ip_addr, (char *)&para.ip, maxIpLen);
   strncpy((char*)wNetConfig.net_mask, (char *)&para.mask, maxIpLen);
   strncpy((char*)wNetConfig.gateway_ip_addr, (char *)&para.dns, maxIpLen);
@@ -487,6 +486,7 @@ int application_start(void)
     require_noerr( err, exit );
 
     _ConnectToAP( context );
+		
   }
 
   mico_log("Free memory %d bytes", MicoGetMemoryInfo()->free_memory) ; 
