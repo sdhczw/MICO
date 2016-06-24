@@ -199,8 +199,8 @@ void mxchip_mfg_test(mico_Context_t *inContex)
   sprintf (str, "Library Version: %s\r\n", system_lib_version());
   mf_printf (str);
   
-  sprintf(str, "Library Version: %s\r\n", system_lib_version());
-  mf_printf(str);
+  //sprintf(str, "Library Version: %s\r\n", system_lib_version());
+ // mf_printf(str);
   mf_printf("APP Version: ");
   //memset(str, 0, sizeof(str));
   //system_version(str, sizeof(str));
