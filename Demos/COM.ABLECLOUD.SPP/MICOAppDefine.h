@@ -47,8 +47,8 @@
 //#define CHECK_NAME          "360sniffer"
       
 /* Wi-Fi configuration mode */
-#define MICO_CONFIG_MODE CONFIG_MODE_EASYLINK_WITH_SOFTAP
-
+//#define MICO_CONFIG_MODE CONFIG_MODE_EASYLINK_WITH_SOFTAP
+#define MICO_CONFIG_MODE CONFIG_MODE_AIRKISS
 /* Demo C function call C++ function and C++ function call C function */
 //#define MICO_C_CPP_MIXING_DEMO
 

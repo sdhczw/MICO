@@ -439,7 +439,9 @@ OSStatus platform_flash_erase( platform_flash_driver_t *driver, uint32_t StartAd
   require_action( StartAddress >= driver->peripheral->flash_start_addr 
                && EndAddress   <= driver->peripheral->flash_start_addr + driver->peripheral->flash_length - 1, exit, err = kParamErr);
   
-
+#ifndef MICO_DISABLE_WATCHDOG
+        WdgFeed();
+#endif
   if( driver->peripheral->flash_type == FLASH_TYPE_SPI ){
     err = SpiFlashErase( StartAddress, EndAddress - StartAddress +1 );
 #ifndef MICO_DISABLE_WATCHDOG

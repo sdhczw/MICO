@@ -98,7 +98,6 @@ static void ak_discovery_thread(void *arg)
   char *buf = NULL;
   ssize_t len = 0;
   int ret;
-   int i =0;
   buf = (char*)malloc( 1024 );
   require_action( buf, exit, err = kNoMemoryErr );
   

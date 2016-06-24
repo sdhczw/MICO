@@ -163,7 +163,6 @@ void micoNotify_DHCPCompleteHandler(IPStatusTypedef *pnet, mico_Context_t * cons
 {
 	extern u32 u32CloudIp;
     extern u32 g_u32GloablIp;
-	int retval;
     mico_log_trace();
     require(inContext, exit);
 	mico_log("micoNotify_DHCPCompleteHandler");
@@ -173,13 +172,13 @@ void micoNotify_DHCPCompleteHandler(IPStatusTypedef *pnet, mico_Context_t * cons
     strcpy((char *)inContext->micoStatus.gateWay, pnet->gate);
     strcpy((char *)inContext->micoStatus.dnsServer, pnet->dns);
     mico_rtos_unlock_mutex(&inContext->flashContentInRam_mutex);
-	retval = dns_request((char *)g_struZcConfigDb.struCloudInfo.u8CloudAddr);
+	//retval = dns_request((char *)g_struZcConfigDb.struCloudInfo.u8CloudAddr);
     printf("ip =%s\n",inContext->micoStatus.localIp);
     g_u32GloablIp = inet_addr(inContext->micoStatus.localIp);
-    if (retval > 0)
-    {
-        u32CloudIp = retval;
-    }
+   // if (retval > 0)
+   // {
+    //    u32CloudIp = retval;
+   // }
 	MX_WakeUp();
 #ifdef AIRKISS_DISCOVERY_ENABLE
     {

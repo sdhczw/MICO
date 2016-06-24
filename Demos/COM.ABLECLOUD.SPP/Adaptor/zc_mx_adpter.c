@@ -10,7 +10,8 @@
 #include <zc_mx_adpter.h>
 #include <ac_api.h>
 //extern vu32 MS_TIMER;
-
+#define	 EX_PARA_END_OPT_ADDRESS (uint32_t)0x001DCBFF
+#define  EX_PARA_START_LICENSE_ADDRESS (uint32_t)0x001DCC00
 u8 g_u8recvbuffer[MX_MAX_SOCKET_LEN]; // cmd, fwd data are saved in this buffer
 ZC_UartBuffer g_struUartBuffer;
 extern mico_Context_t *context;
@@ -22,7 +23,7 @@ u8 g_u8TimerIndex;
 mico_timer_t g_struMicoTimer;
 extern PTC_ProtocolCon  g_struProtocolController;
 PTC_ModuleAdapter g_struAdapter;
-
+extern ZC_LanConfigInfo g_struLanInfo;
 MSG_Buffer g_struRecvBuffer;
 
 MSG_Queue  g_struRecvQueue;
@@ -103,7 +104,7 @@ void MX_WriteDataToFlash(u8 *pu8Data, u16 u16Len)
     uint32_t paraStartAddress, paraEndAddress;
 	
     paraStartAddress = EX_PARA_START_ADDRESS;
-    paraEndAddress = EX_PARA_END_ADDRESS;
+    paraEndAddress = EX_PARA_END_OPT_ADDRESS;
 
     MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);
     
@@ -130,6 +131,40 @@ void MX_ReadDataFormFlash(u8 *pu8Data, u16 u16Len)
     MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)pu8Data, u16Len);
     MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA);  
 }
+/*************************************************
+* Function: HF_ReadLicenseFromFlash
+* Description: 
+* Author: cxy 
+* Returns: 
+* Parameter: 
+* History:
+*************************************************/
+void MX_ReadLicenseFromFlash(u8 *pu8Data, u16 u16Len) 
+{
+	u32 configInFlash = EX_PARA_START_LICENSE_ADDRESS;    
+    MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);
+    MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)pu8Data, u16Len);
+    MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA); 	
+}
+/*************************************************
+* Function: HF_WriteLicenseToFlash
+* Description: 
+* Author: cxy 
+* Returns: 
+* Parameter: 
+* History:
+*************************************************/
+void MX_WriteLicenseToFlash(u8 *pu8Data, u16 u16Len)
+{
+	uint32_t paraStartAddress, paraEndAddress;	
+    paraStartAddress = EX_PARA_START_LICENSE_ADDRESS;
+    paraEndAddress = EX_PARA_END_ADDRESS;
+    MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);   
+    MicoFlashErase(MICO_FLASH_FOR_EX_PARA, paraStartAddress, paraEndAddress);    
+    MicoFlashWrite(MICO_FLASH_FOR_EX_PARA,&paraStartAddress, pu8Data, u16Len);    
+    MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA);
+}
+
 /*************************************************
 * Function: MX_Init
 * Description: 
@@ -233,7 +268,9 @@ void MX_LocalServerfunc(void *inContext)
         
         FD_SET(g_Bcfd, &fdread);
         u32MaxFd = u32MaxFd > g_Bcfd ? u32MaxFd : g_Bcfd;
-        
+        FD_SET(g_struLanInfo.fd, &fdread);
+        u32MaxFd = u32MaxFd > g_Bcfd ? u32MaxFd : g_Bcfd;
+        u32MaxFd = u32MaxFd > g_struLanInfo.fd ? u32MaxFd : g_struLanInfo.fd;
         if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
         {
             FD_SET(g_struProtocolController.struClientConnection.u32Socket, &fdread);
@@ -312,6 +349,16 @@ void MX_LocalServerfunc(void *inContext)
                 ZC_SendClientQueryReq(g_u8MsgBuildBuffer, (u16)s32RecvLen);
             } 
         }
+		if (FD_ISSET(g_struLanInfo.fd, &fdread))
+        {
+            tmp = sizeof(addr); 
+            s32RecvLen = recvfrom(g_struLanInfo.fd, g_u8recvbuffer, MX_MAX_SOCKET_LEN, 0, (struct sockaddr_t *)&addr, (socklen_t*)&tmp);
+            if (s32RecvLen > 0)
+            {
+                 ZC_Printf("Udp Client ip= 0x%x\n",addr.s_ip);
+                 ZC_HandleLanMsg((u8*)&addr, g_u8recvbuffer, s32RecvLen);
+            }           
+        }  
     }   
 }
 /*************************************************
@@ -347,7 +394,8 @@ int anetKeepAlive( int fd, int interval)
     }
     return 0;
 }
-
+//int handle_input(char *inbuf);
+extern void dns_clean(void);
 /*************************************************
 * Function: MX_ConnectToCloud
 * Description: 
@@ -361,9 +409,12 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     int fd; 
     int opt = 0;
     struct sockaddr_t addr;
+	int err;
+	char ip_addr[17];
+	//char dns_clean[13]="dns clean";
+	
+	
     memset((char*)&addr,0,sizeof(addr));
-		
-    
     if (1 == g_struZcConfigDb.struSwitchInfo.u32ServerAddrConfig)
     {
         addr.s_port = g_struZcConfigDb.struSwitchInfo.u16ServerPort;
@@ -371,14 +422,37 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     }
     else
     {
+		//retval=dns_request((char *)g_struZcConfigDb.struCloudInfo.u8CloudAddr);
+		//if(retval>0)
+		//u32CloudIp=retval;
+		memset(ip_addr,0,17);
+		while(1)
+		{
+			
+					  
+			//handle_input(dns_clean);
+			//char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv
+			//dns_Command("dns_clean",10,2,argv);
+			err = gethostbyname((const char*)g_struZcConfigDb.struCloudInfo.u8CloudAddr,(u8*)ip_addr,16);
+			require_noerr(err, ReConnWithDelay);
+			
+			break;
+			ReConnWithDelay:
+			mico_thread_sleep(5);
+		}
+				ZC_Printf("%s\n",ip_addr);
+				u32CloudIp=inet_addr(ip_addr);
         addr.s_ip = u32CloudIp;
         addr.s_port = ZC_CLOUD_PORT;
         ZC_Printf("connect redirect!\n");
+				dns_clean();
+				//handle_input(dns_clean);
     }
     
     
     if (0 == addr.s_ip)
     {
+			
         return ZC_RET_ERROR;
     }
     
@@ -401,9 +475,9 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     }
     ZC_Printf("connect ok!\n");
     g_struProtocolController.struCloudConnection.u32Socket = fd;
-    ZC_Rand(g_struProtocolController.RandMsg);
-    
+    ZC_Rand(g_struProtocolController.RandMsg);   
     return ZC_RET_OK;
+
 }
 
 
@@ -683,6 +757,24 @@ void MX_BcInit()
     return;
 }
 /*************************************************
+* Function: HF_AuthUdpInit
+* Description: 
+* Author: cxy 
+* Returns: 
+* Parameter: 
+* History:
+*************************************************/
+void MX_AuthUdpInit(void)
+{
+    struct sockaddr_t addr;  
+    addr.s_port = ZC_AUTH_PORT; 
+    addr.s_ip = INADDR_ANY;
+    g_struLanInfo.fd = socket(AF_INET, SOCK_DGRM, IPPROTO_UDP); 
+    bind(g_struLanInfo.fd, &addr, sizeof(addr)); 
+    return;
+}
+
+/*************************************************
 * Function: MX_Cloudfunc
 * Description: 
 * Author: cxy 
@@ -694,6 +786,7 @@ void MX_Cloudfunc(void *inContext)
 {
     int fd;
     u32 u32Timer = 0;
+	MX_AuthUdpInit();
     while(1) 
     {
         mico_thread_msleep(1);
@@ -766,6 +859,8 @@ void MX_Init()
     g_struAdapter.pfunRest = MX_Rest;
     g_struAdapter.pfunWriteFlash = MX_WriteDataToFlash;
     g_struAdapter.pfunReadFlash = MX_ReadDataFormFlash;
+	g_struAdapter.pfunWriteLicense = MX_WriteLicenseToFlash;
+    g_struAdapter.pfunReadLicense = MX_ReadLicenseFromFlash;
     g_struAdapter.pfunReboot = MX_Reboot;
     g_struAdapter.pfunGetMac = MX_GetMac;
     g_struAdapter.pfunPrintf = (pFunPrintf)printf;
