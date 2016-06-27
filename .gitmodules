@@ -1,6 +1,6 @@
 [submodule "Demos/COM.ABLECLOUD.SPP/ZC"]
 	path = Demos/COM.ABLECLOUD.SPP/ZC
-	url = git@github.com:sdhczw/ZC.git
+	url = git@git.ablecloud.cn:c/zc.git
 [submodule "Demos/COM.ABLECLOUD.SPP/AC"]
 	path = Demos/COM.ABLECLOUD.SPP/AC
-	url = git@github.com:sdhczw/AC.git
+	url = git@git.ablecloud.cn:c/ac.git
