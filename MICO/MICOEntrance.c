@@ -138,6 +138,7 @@ void micoNotify_WifiStatusHandler(WiFiEvent event, mico_Context_t * const inCont
   case NOTIFY_STATION_UP:
     mico_log("Station up");
     MX_BcInit();
+	MX_AuthUdpInit();
     MicoRfLed(true);
     break;
   case NOTIFY_STATION_DOWN:

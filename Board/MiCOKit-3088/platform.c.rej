@@ -1,0 +1,10 @@
+diff a/Board/MiCOKit-3088/platform.c b/Board/MiCOKit-3088/platform.c	(rejected hunks)
+@@ -294,7 +294,7 @@
+ static bool UpgradeFileFound = false;
+ 
+ 
+-void init_platform_bootloader( void )
++void _init_platform_bootloader( void )
+ {
+   uint32_t BootNvmInfo;
+   OSStatus err;

@@ -186,6 +186,12 @@ typedef enum
 #define EX_PARA_END_ADDRESS         (uint32_t)0x000FEFFF
 #define EX_PARA_FLASH_SIZE          (EX_PARA_END_ADDRESS - EX_PARA_START_ADDRESS + 1)   /* 4k bytes*/
 
+#define MICO_FLASH_FOR_LICENSE      MICO_INTERNAL_FLASH
+#define LICENSE_START_ADDRESS       (uint32_t)0x000FF000
+#define LICENSE_END_ADDRESS         (uint32_t)0x000FFFFF
+#define LICENSE_FLASH_SIZE          (LICENSE_END_ADDRESS - LICENSE_START_ADDRESS + 1)   /* 4k bytes */
+
+
 /******************************************************
 *                   Enumerations
 ******************************************************/

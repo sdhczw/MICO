@@ -773,6 +773,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Support\URLUtils.c</FilePath>
             </File>
+            <File>
+              <FileName>CheckSumUtils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Support\CheckSumUtils.c</FilePath>
+            </File>
+            <File>
+              <FileName>MICOMfgtest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Support\MICOMfgtest.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2113,6 +2123,16 @@
               <FileName>URLUtils.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Support\URLUtils.c</FilePath>
+            </File>
+            <File>
+              <FileName>CheckSumUtils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Support\CheckSumUtils.c</FilePath>
+            </File>
+            <File>
+              <FileName>MICOMfgtest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Support\MICOMfgtest.c</FilePath>
             </File>
           </Files>
         </Group>

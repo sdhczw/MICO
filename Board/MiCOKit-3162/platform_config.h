@@ -161,8 +161,13 @@ Note: the 1st sector 0x08000000-0x08003FFF is reserved for the IAP code */
 
 #define MICO_FLASH_FOR_EX_PARA      MICO_INTERNAL_FLASH
 #define EX_PARA_START_ADDRESS       (uint32_t)0x08008000 
-#define EX_PARA_END_ADDRESS         (uint32_t)0x0800BFFF
-#define EX_PARA_FLASH_SIZE          (EX_PARA_END_ADDRESS - EX_PARA_START_ADDRESS + 1)  
+#define EX_PARA_END_ADDRESS         (uint32_t)0x08008FFF
+#define EX_PARA_FLASH_SIZE          (EX_PARA_END_ADDRESS - EX_PARA_START_ADDRESS + 1) 
+
+#define MICO_FLASH_FOR_LICENSE      MICO_INTERNAL_FLASH
+#define LICENSE_START_ADDRESS       (uint32_t)0x0800A000
+#define LICENSE_END_ADDRESS         (uint32_t)0x0800AFFF
+#define LICENSE_FLASH_SIZE          (LICENSE_END_ADDRESS - LICENSE_START_ADDRESS + 1)   /* 4k bytes */
 
 /******************************************************
 *                   Enumerations

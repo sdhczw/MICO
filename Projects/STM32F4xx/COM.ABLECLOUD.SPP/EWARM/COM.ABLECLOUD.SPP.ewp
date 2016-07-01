@@ -180,7 +180,7 @@
           <state>ZC_MODULE_DEV</state>
           <state>xZC_EASY_UART</state>
           <state>LOCAL_STATIC_TOKEN</state>
-          <state>TEST_ADDR</state>
+          <state>xTEST_ADDR</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -241,7 +241,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>11111110</state>
+          <state>00000000</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -346,7 +346,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>3</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -355,7 +355,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>3</state>
+          <state>1</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>

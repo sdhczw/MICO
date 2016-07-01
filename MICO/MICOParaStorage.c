@@ -34,10 +34,14 @@
 #include "MICO.h"
 #include "platform_config.h"
 #include "MicoPlatform.h"
-
+#ifdef MOD3162
+#define FLASH_TEMP_SIZE 512
+#endif
 /* Update seed number every time*/
 static int32_t seedNum = 0;
-
+#ifdef MOD3162
+static uint8_t  g_u8FlashTemp[FLASH_TEMP_SIZE];
+#endif
 __weak void appRestoreDefault_callback(mico_Context_t *inContext)
 {
 
@@ -47,9 +51,12 @@ OSStatus MICORestoreDefault(mico_Context_t *inContext)
 { 
   OSStatus err = kNoErr;
   uint32_t paraStartAddress, paraEndAddress;
- 
+#ifdef MOD3162
+  u32 configInFlash =PARA_START_ADDRESS+1024 ;
+#endif
   paraStartAddress = PARA_START_ADDRESS;
   paraEndAddress = PARA_END_ADDRESS;
+  
   /*wlan configration is not need to change to a default state, use easylink to do that*/
   memset(&inContext->flashContentInRam, 0x0, sizeof(inContext->flashContentInRam));
   sprintf(inContext->flashContentInRam.micoSystemConfig.name, DEFAULT_NAME);
@@ -66,8 +73,15 @@ OSStatus MICORestoreDefault(mico_Context_t *inContext)
 
   err = MicoFlashInitialize(MICO_FLASH_FOR_PARA);
   require_noerr(err, exit);
+#ifdef MOD3162
+	MicoFlashRead(MICO_FLASH_FOR_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+	configInFlash = PARA_START_ADDRESS+1024;
+#endif
   err = MicoFlashErase(MICO_FLASH_FOR_PARA, paraStartAddress, paraEndAddress);
   require_noerr(err, exit);
+#ifdef MOD3162
+	MicoFlashWrite(MICO_FLASH_FOR_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+#endif
   err = MicoFlashWrite(MICO_FLASH_FOR_PARA, &paraStartAddress, (void *)inContext, sizeof(flash_content_t));
   require_noerr(err, exit);
   err = MicoFlashFinalize(MICO_FLASH_FOR_PARA);
@@ -81,7 +95,9 @@ OSStatus MICORestoreMFG(mico_Context_t *inContext)
 { 
   OSStatus err = kNoErr;
   uint32_t paraStartAddress, paraEndAddress;
- 
+#ifdef MOD3162
+  u32 configInFlash =PARA_START_ADDRESS+1024 ;
+#endif
   paraStartAddress = PARA_START_ADDRESS;
   paraEndAddress = PARA_END_ADDRESS;
 
@@ -94,8 +110,15 @@ OSStatus MICORestoreMFG(mico_Context_t *inContext)
 
   err = MicoFlashInitialize(MICO_FLASH_FOR_PARA);
   require_noerr(err, exit);
+#ifdef MOD3162
+	MicoFlashRead(MICO_FLASH_FOR_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+	configInFlash = PARA_START_ADDRESS+1024;
+#endif
   err = MicoFlashErase(MICO_FLASH_FOR_PARA, paraStartAddress, paraEndAddress);
   require_noerr(err, exit);
+#ifdef MOD3162
+	MicoFlashWrite(MICO_FLASH_FOR_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+#endif
   err = MicoFlashWrite(MICO_FLASH_FOR_PARA, &paraStartAddress, (void *)inContext, sizeof(flash_content_t));
   require_noerr(err, exit);
   err = MicoFlashFinalize(MICO_FLASH_FOR_PARA);
@@ -142,15 +165,24 @@ OSStatus MICOUpdateConfiguration(mico_Context_t *inContext)
 {
   OSStatus err = kNoErr;
   uint32_t paraStartAddress, paraEndAddress;
- 
+#ifdef MOD3162
+  u32 configInFlash =PARA_START_ADDRESS+1024 ;
+#endif
   paraStartAddress = PARA_START_ADDRESS;
   paraEndAddress = PARA_END_ADDRESS;
 
   inContext->flashContentInRam.micoSystemConfig.seed = ++seedNum;
   err = MicoFlashInitialize(MICO_FLASH_FOR_PARA);
   require_noerr(err, exit);
+#ifdef MOD3162
+	MicoFlashRead(MICO_FLASH_FOR_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+	configInFlash = PARA_START_ADDRESS+1024;
+#endif
   err = MicoFlashErase(MICO_FLASH_FOR_PARA, paraStartAddress, paraEndAddress);
   require_noerr(err, exit);
+#ifdef MOD3162
+	MicoFlashWrite(MICO_FLASH_FOR_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+#endif
   err = MicoFlashWrite(MICO_FLASH_FOR_PARA, &paraStartAddress, (uint8_t *)&inContext->flashContentInRam, sizeof(flash_content_t));
   require_noerr(err, exit);
   err = MicoFlashFinalize(MICO_FLASH_FOR_PARA);

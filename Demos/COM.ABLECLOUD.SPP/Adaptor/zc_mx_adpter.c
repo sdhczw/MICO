@@ -10,8 +10,6 @@
 #include <zc_mx_adpter.h>
 #include <ac_api.h>
 //extern vu32 MS_TIMER;
-#define	 EX_PARA_END_OPT_ADDRESS (uint32_t)0x001DCBFF
-#define  EX_PARA_START_LICENSE_ADDRESS (uint32_t)0x001DCC00
 u8 g_u8recvbuffer[MX_MAX_SOCKET_LEN]; // cmd, fwd data are saved in this buffer
 ZC_UartBuffer g_struUartBuffer;
 extern mico_Context_t *context;
@@ -35,8 +33,9 @@ u8 g_u8MsgBuildBuffer[MSG_BULID_BUFFER_MAXLEN];
 
 u16 g_u16TcpMss;
 u16 g_u16LocalPort;
-
-
+#ifdef MOD3162
+static u8 g_u8FlashTemp[FLASH_TEMP_SIZE];
+#endif
 u32 u32CloudIp = 0;
 u8 g_u8ClientSendLen = 0;
 MSG_Buffer g_struClientBuffer;
@@ -67,7 +66,7 @@ void MX_Sleep()
     u32 u32Index;
     
     close(g_Bcfd);
-
+	close(g_struLanInfo.fd);
     if (PCT_INVAILD_SOCKET != g_struProtocolController.struClientConnection.u32Socket)
     {
         close(g_struProtocolController.struClientConnection.u32Socket);
@@ -102,17 +101,25 @@ void MX_Sleep()
 void MX_WriteDataToFlash(u8 *pu8Data, u16 u16Len)
 {
     uint32_t paraStartAddress, paraEndAddress;
-	
+#ifndef MOD3162
     paraStartAddress = EX_PARA_START_ADDRESS;
-    paraEndAddress = EX_PARA_END_OPT_ADDRESS;
-
+    paraEndAddress = EX_PARA_END_ADDRESS;
     MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);
-    
     MicoFlashErase(MICO_FLASH_FOR_EX_PARA, paraStartAddress, paraEndAddress);
-    
     MicoFlashWrite(MICO_FLASH_FOR_EX_PARA,&paraStartAddress, pu8Data, u16Len);
-    
     MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA);
+#else
+    u32 configInFlash = PARA_START_ADDRESS;
+    paraStartAddress = PARA_START_ADDRESS+1024;
+    paraEndAddress = PARA_END_ADDRESS;  
+    MicoFlashInitialize(MICO_FLASH_FOR_PARA);
+    MicoFlashRead(MICO_FLASH_FOR_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+    configInFlash = PARA_START_ADDRESS;
+    MicoFlashErase(MICO_FLASH_FOR_PARA, configInFlash, paraEndAddress);
+    MicoFlashWrite(MICO_FLASH_FOR_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+    MicoFlashWrite(MICO_FLASH_FOR_PARA,&paraStartAddress, pu8Data, u16Len);
+    MicoFlashFinalize(MICO_FLASH_FOR_PARA);
+ #endif
 }
 
 /*************************************************
@@ -125,11 +132,17 @@ void MX_WriteDataToFlash(u8 *pu8Data, u16 u16Len)
 *************************************************/
 void MX_ReadDataFormFlash(u8 *pu8Data, u16 u16Len) 
 {
+#ifndef MOD3162
     u32 configInFlash = EX_PARA_START_ADDRESS;
-    
     MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);
     MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)pu8Data, u16Len);
-    MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA);  
+    MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA); 
+#else
+    u32 configInFlash = PARA_START_ADDRESS+1024;;
+    MicoFlashInitialize(MICO_FLASH_FOR_PARA);
+    MicoFlashRead(MICO_FLASH_FOR_PARA, &configInFlash, (uint8_t *)pu8Data, u16Len);
+    MicoFlashFinalize(MICO_FLASH_FOR_PARA); 
+#endif
 }
 /*************************************************
 * Function: HF_ReadLicenseFromFlash
@@ -141,10 +154,10 @@ void MX_ReadDataFormFlash(u8 *pu8Data, u16 u16Len)
 *************************************************/
 void MX_ReadLicenseFromFlash(u8 *pu8Data, u16 u16Len) 
 {
-	u32 configInFlash = EX_PARA_START_LICENSE_ADDRESS;    
-    MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);
-    MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash, (uint8_t *)pu8Data, u16Len);
-    MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA); 	
+    u32 configInFlash = LICENSE_START_ADDRESS;    
+    MicoFlashInitialize(MICO_FLASH_FOR_LICENSE);
+    MicoFlashRead(MICO_FLASH_FOR_LICENSE, &configInFlash, (uint8_t *)pu8Data, u16Len);
+    MicoFlashFinalize(MICO_FLASH_FOR_LICENSE); 	
 }
 /*************************************************
 * Function: HF_WriteLicenseToFlash
@@ -157,12 +170,22 @@ void MX_ReadLicenseFromFlash(u8 *pu8Data, u16 u16Len)
 void MX_WriteLicenseToFlash(u8 *pu8Data, u16 u16Len)
 {
 	uint32_t paraStartAddress, paraEndAddress;	
-    paraStartAddress = EX_PARA_START_LICENSE_ADDRESS;
-    paraEndAddress = EX_PARA_END_ADDRESS;
-    MicoFlashInitialize(MICO_FLASH_FOR_EX_PARA);   
-    MicoFlashErase(MICO_FLASH_FOR_EX_PARA, paraStartAddress, paraEndAddress);    
-    MicoFlashWrite(MICO_FLASH_FOR_EX_PARA,&paraStartAddress, pu8Data, u16Len);    
-    MicoFlashFinalize(MICO_FLASH_FOR_EX_PARA);
+    paraStartAddress = LICENSE_START_ADDRESS;
+    paraEndAddress = LICENSE_END_ADDRESS;
+#ifdef MOD3162
+	//u32 configInFlash = EX_PARA_START_ADDRESS;
+#endif       
+    //MicoFlashInitialize(MICO_FLASH_FOR_LICENSE); 
+#ifdef MOD3162
+	//MicoFlashRead(MICO_FLASH_FOR_EX_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+	//configInFlash = EX_PARA_START_ADDRESS;
+#endif        
+    MicoFlashErase(MICO_FLASH_FOR_LICENSE, paraStartAddress, paraEndAddress);
+#ifdef MOD3162
+	//MicoFlashWrite(MICO_FLASH_FOR_EX_PARA, &configInFlash,g_u8FlashTemp, FLASH_TEMP_SIZE);
+#endif
+    MicoFlashWrite(MICO_FLASH_FOR_LICENSE,&paraStartAddress, pu8Data, u16Len); 
+    MicoFlashFinalize(MICO_FLASH_FOR_LICENSE);
 }
 
 /*************************************************
@@ -411,9 +434,6 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     struct sockaddr_t addr;
 	int err;
 	char ip_addr[17];
-	//char dns_clean[13]="dns clean";
-	
-	
     memset((char*)&addr,0,sizeof(addr));
     if (1 == g_struZcConfigDb.struSwitchInfo.u32ServerAddrConfig)
     {
@@ -422,20 +442,11 @@ u32 MX_ConnectToCloud(PTC_Connection *pstruConnection)
     }
     else
     {
-		//retval=dns_request((char *)g_struZcConfigDb.struCloudInfo.u8CloudAddr);
-		//if(retval>0)
-		//u32CloudIp=retval;
 		memset(ip_addr,0,17);
 		while(1)
 		{
-			
-					  
-			//handle_input(dns_clean);
-			//char *pcWriteBuffer, int xWriteBufferLen, int argc, char **argv
-			//dns_Command("dns_clean",10,2,argv);
 			err = gethostbyname((const char*)g_struZcConfigDb.struCloudInfo.u8CloudAddr,(u8*)ip_addr,16);
 			require_noerr(err, ReConnWithDelay);
-			
 			break;
 			ReConnWithDelay:
 			mico_thread_sleep(5);
@@ -658,7 +669,7 @@ void MX_GetMac(u8 *pu8Mac)
 		                                                 context->micoStatus.mac[6],  context->micoStatus.mac[7], \
 	                                                   context->micoStatus.mac[9],  context->micoStatus.mac[10], \
                                                      context->micoStatus.mac[12], context->micoStatus.mac[13], \
-                                                     context->micoStatus.mac[15], context->micoStatus.mac[16] );
+                                                     context->micoStatus.mac[15], context->micoStatus.mac[16]);
 	ZC_Printf("mac=%s\n",pu8Mac);
 }
 
@@ -786,7 +797,7 @@ void MX_Cloudfunc(void *inContext)
 {
     int fd;
     u32 u32Timer = 0;
-	MX_AuthUdpInit();
+	
     while(1) 
     {
         mico_thread_msleep(1);
